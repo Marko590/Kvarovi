@@ -49,10 +49,10 @@ const Kvarovi = () => {
 
   return (
     <View>
-      <LinearGradient colors={['#A47AFD','#b07fec','#ea999c', '#FEA280']} style={{elevation:10 }}
+      <LinearGradient colors={['#2337b0','#484fe8','#3f67cc', '#00C6FB']} style={{elevation:10 }}
       start={{ x: 0.85, y:0 }} locations={[0,0.1,0.45, 0.6]}>
-        <LinearGradient colors={['#A47AFD','#d28ebd', '#FEA280']} style={{ backgroundColor:'#4a84fe', height: 250, margin: 5, marginTop: 30, borderRadius: 5 ,borderWidth:1,borderColor:'gray',elevation:20}}
-      start={{ x: 0.85, y:0 }} locations={[0.05,0.4,0.8]}>
+        <LinearGradient colors={['#484fe8','#248bf2', '#00C6FB']} style={{ backgroundColor:'#4a84fe', height: 250, margin: 5, marginTop: 30, borderRadius: 5 ,borderWidth:1,borderColor:'gray',elevation:8}}
+      start={{ x: 0.85, y:0 }} locations={[0.1,0.64,1]}>
 
           
         </LinearGradient>
@@ -190,8 +190,7 @@ const styles = StyleSheet.create({
     marginTop: 35,
     justifyContent: 'space-between',
     marginLeft: 10,
-    marginRight: 10,
-    elevation:10
+    marginRight: 10
   },
   expandableCardLast: {
     backgroundColor: '#787777',
