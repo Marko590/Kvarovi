@@ -18,7 +18,7 @@ export default function CollapsibleCard(props){
   
         </LinearGradient>
         <Collapsible collapsed={check}
-          duration={500}
+          duration={100}
         >
           {props.children}
         </Collapsible>

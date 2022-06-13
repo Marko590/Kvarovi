@@ -48,7 +48,7 @@ export default function CollapsibleCard(props){
     },
     
     neighbourhoodText: {
-      color: 'black',
+      color: 'white',
       fontSize: 20,
       fontFamily: 'sans-serif-light',
     },
@@ -56,7 +56,7 @@ export default function CollapsibleCard(props){
     neighbourhoodTitle: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#b3b3b3',
+      backgroundColor: '#9c9c9c',
       justifyContent: 'space-between',
       borderRadius: 7,
       borderBottomLeftRadius: 0,
@@ -72,7 +72,7 @@ export default function CollapsibleCard(props){
     neighbourhoodTitlePressed: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#d6d6d6',
+      backgroundColor: '#bdbdbd',
       justifyContent: 'space-between',
       borderRadius: 7,
       paddingLeft: 15,
