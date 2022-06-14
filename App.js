@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import {Animated, Image, StyleSheet, Text, View, Button, Modal, TouchableWithoutFeedback, Linking, TouchableOpacity } from 'react-native';
-import { NavigationContainer,useNavigation } from '@react-navigation/native';
+import { Animated, Image, StyleSheet, Text, View, Button, Modal, TouchableWithoutFeedback, Linking, TouchableOpacity } from 'react-native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Collapsible from 'react-native-collapsible';
 import 'react-native-gesture-handler';
@@ -73,50 +73,47 @@ const Kvarovi = (props) => {
 
         }}
           start={{ x: 0.7, y: 0 }} locations={[0, 0.2, 0.6, 0.85]}>
-          <Text style={{ color: 'white', fontSize: 50,fontFamily:'monospace' }}>Stari Grad</Text>
+          <Text style={{ color: 'white', fontSize: 50, fontFamily: 'monospace' }}>Stari Grad</Text>
           <View>
             <Text style={{ color: 'white', fontSize: 30, marginBottom: 30, fontFamily: 'sans-serif-light' }}>Broj kvarova u Vašem naselju:{selectedIndex}</Text>
           </View>
         </LinearGradient>
+
         <View style={styles.buttonContainer}>
-
-
-          {data.map((a, index) => {
-            return (
-              <TimeButton time={a.time} setIndex={setIndex} index={index} selectedIndex={selectedIndex} />
-            )
-          })}
-
+          {data.map((a, index) => 
+            {
+              return (
+                <TimeButton time={a.time} setIndex={setIndex} index={index} selectedIndex={selectedIndex} />
+              )
+            })
+          }
         </View>
 
         <LinearGradient colors={['#ffffff', '#cccccc']} style={[styles.cardHolder]}
           start={{ x: 0, y: 0 }} locations={[0.7, 1]}>
 
-
-
           <ScrollView showsVerticalScrollIndicator={false} overScrollMode='never' >
             {data.at(selectedIndex).streets.map(neighbourhoodInfo => {
               return (
-                <ScrollView contentContainerStyle={{ paddingLeft: 10, paddingRight: 10, marginTop: 10, marginBottom: 10 }} showsVerticalScrollIndicator={false} overScrollMode='never'>
-
+                <ScrollView 
+                contentContainerStyle={{ paddingLeft: 10, paddingRight: 10, marginTop: 10, marginBottom: 10 }} 
+                showsVerticalScrollIndicator={false}
+                overScrollMode='never'>
                   <CollapsibleCard neighbourhood={neighbourhoodInfo.neighbourhood}>
-                    {neighbourhoodInfo.streetList.map(street => {
-                      return (
-                        <StreetCard style={neighbourhoodInfo.streetList.indexOf(street) == (neighbourhoodInfo.streetList.length - 1)
+                    {neighbourhoodInfo.streetList.map(street => 
+                      {
+                      return(
+                        <StreetCard 
+                          style={neighbourhoodInfo.streetList.indexOf(street) == (neighbourhoodInfo.streetList.length - 1)
                           ? styles.expandableCardLast
                           : styles.expandableCard}
-                          street={street}/>
-
-                        )
-                    })}
-                  </CollapsibleCard>
-                </ScrollView>
-              )
-            })}
+                          street={street} />
+                      )
+                      })
+                    }     
+                    </CollapsibleCard>
+                </ScrollView>)})}
           </ScrollView>
-
-
-
         </LinearGradient>
         <StatusBar style="auto" />
       </LinearGradient>
@@ -129,16 +126,19 @@ const Radovi = (props) => {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']} style={styles.gradient}
-        start={{ x: 0.75, y: 0.35 }} locations={[0, 0.1, 0.3, 0.45, 0.75]}>
-          <TouchableOpacity onPress={() => { props.setCheck(prevCheck => !prevCheck) }}>
-            <Image
-              style={[styles.topTabIcons, { marginLeft: 15, width: 25, height: 25, marginTop: 3 }]}
-              source={require('./assets/hamburger.png')} />
-          </TouchableOpacity>
+      <LinearGradient colors={['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']} 
+        style={styles.gradient}
+        start={{ x: 0.75, y: 0.35 }} 
+        locations={[0, 0.1, 0.3, 0.45, 0.75]}>
 
-          </LinearGradient>
-    
+        <TouchableOpacity onPress={() => { props.setCheck(prevCheck => !prevCheck) }}>
+          <Image
+            style={[styles.topTabIcons, { marginLeft: 15, width: 25, height: 25, marginTop: 3 }]}
+            source={require('./assets/hamburger.png')} />
+        </TouchableOpacity>
+
+      </LinearGradient>
+
     </View>
   );
 };
@@ -147,139 +147,139 @@ const Radovi = (props) => {
 
 export default function App() {
   const Stack = createStackNavigator();
-  
+
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false, }}>
-        
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Kvarovi" component={KvaroviDrawer} />
         <Stack.Screen name="Radovi" component={RadoviDrawer} />
       </Stack.Navigator>
     </NavigationContainer>
-    
   );
 }
 
-const KvaroviDrawer=(props)=>{
-  const navigation=useNavigation();
+const KvaroviDrawer = (props) => {
+  const navigation = useNavigation();
   const menu = <SideBar />;
   const [check, setCheck] = useState(false);
   const [isOpen, setOpen] = useState('closed');
-  return(
 
-
+  return (
     <SideMenu isOpen={check} menu={menu} animationFunction={(prop, value) =>
       Animated.spring(prop, {
         toValue: value,
-        friction: 8,
+        friction: 17,
         useNativeDriver: true,
-      })
-    } >
+      })}>
       <TouchableOpacity onPress={() => { setCheck(false) }} activeOpacity={1}>
         <Kvarovi setCheck={setCheck} />
       </TouchableOpacity>
     </SideMenu>
   )
-
-
 }
 
-const RadoviDrawer=(props)=>{
-  const navigation=useNavigation();
-  const menu = <SideBar />;
+const RadoviDrawer = (props) => {
+  const navigation = useNavigation();
+  const menu = <SideBar/>;
   const [check, setCheck] = useState(false);
   const [isOpen, setOpen] = useState('closed');
   return(
-
-
-    <SideMenu isOpen={check} menu={menu} animationFunction={(prop, value) =>
+    <SideMenu isOpen={check} menu={menu} 
+    animationFunction={(prop, value) =>
       Animated.spring(prop, {
         toValue: value,
         friction: 8,
         useNativeDriver: true,
-      })
-    } >
+      })}>
       <TouchableOpacity onPress={() => { setCheck(false) }} activeOpacity={1}>
-        <Radovi setCheck={setCheck}/>
+        <Radovi setCheck={setCheck} />
       </TouchableOpacity>
     </SideMenu>
   )
-
-
 }
 const SideBar = (props) => {
-  const navigation=useNavigation();
+  const navigation = useNavigation();
   return (
     <View>
-    <LinearGradient colors={['#ffffff', '#dcdcdc']} style={{borderRadius:10}}
-          start={{ x: 0, y: 0 }} locations={[0.82, 1]}>
-      <View style={{ paddingTop: 150 }}>
-        <View style={{ alignItems: 'center', paddingLeft: 20, height: 60, flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>Vodovod</Text>
+      <LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 10 }}
+        start={{ x: 0, y: 0 }} locations={[0.82, 1]}>
+
+        <View style={{ paddingTop: 150 }}>
+
+          <View style={{ alignItems: 'center', paddingLeft: 20, height: 60, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>Vodovod</Text>
+          </View>
+
+          <SideBarEntry>
+            <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Kvarovi</Text>
+            <ChevronRight />
+          </SideBarEntry>
+
+          <SideBarEntry>
+            <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Radovi</Text>
+            <ChevronRight />
+          </SideBarEntry>
 
         </View>
-        <TouchableOpacity>
-          <View style={{ alignItems: 'center', paddingLeft: 20, height: 60, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'black' , borderRadius: 15 }}>
-            <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Kvarovi</Text>
-            <LinearGradient colors={['#A47AFD', '#FEA280']} style={{ marginRight: 20, borderRadius: 20 }}
-              start={{ x: 0, y: 0 }} locations={[0, 0.75]}>
-              <Image
-                style={{ width: 25, height: 25 }}
-                source={require('./assets/chevron-right.png')} />
-            </LinearGradient>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View style={{ alignItems: 'center', paddingLeft: 20, height: 60, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'black', borderRadius: 15 }}>
-            <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Radovi</Text>
-            <LinearGradient colors={['#A47AFD', '#FEA280']} style={{ marginRight: 20, borderRadius: 20 }}
-              start={{ x: 0, y: 0 }} locations={[0, 0.75]}>
-              <Image
-                style={{ width: 25, height: 25 }}
-                source={require('./assets/chevron-right.png')} />
-            </LinearGradient>
-          </View>
-        </TouchableOpacity>
-
-      </View>
       </LinearGradient>
-      <LinearGradient colors={['#ffffff', '#dcdcdc']} style={{borderRadius:10}}
-          start={{ x: 0, y: 0 }} locations={[0.4, 1]}>
-        <View style={{ alignItems: 'center', paddingLeft: 20, height: 60, flexDirection: 'row', justifyContent: 'space-between'}}>
+
+      <LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 10 }}
+        start={{ x: 0, y: 0 }} locations={[0.82, 1]}>
+
+        <SideBarHeader>
           <Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>Struja</Text>
+        </SideBarHeader>
+        
 
-        </View>
-        <TouchableOpacity onPress={()=>{ navigation.navigate('Kvarovi', { name: 'Jane' })}}>
-          <View style={{ alignItems: 'center', paddingLeft: 20, height: 60, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'black', borderRadius: 15 }}>
-            <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Kvarovi</Text>
-            <LinearGradient colors={['#A47AFD', '#FEA280']} style={{ marginRight: 20, borderRadius: 20 }}
-              start={{ x: 0, y: 0 }} locations={[0, 0.75]}>
-              <Image
-                style={{ width: 25, height: 25 }}
-                source={require('./assets/chevron-right.png')} />
-            </LinearGradient>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={()=>{ navigation.navigate('Radovi', { name: 'Jane' })}}>
-          <View style={{ alignItems: 'center', paddingLeft: 20, height: 60, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'black', borderRadius: 15 }}>
-            <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Radovi</Text>
-            <LinearGradient colors={['#A47AFD', '#FEA280']} style={{ marginRight: 20, borderRadius: 30 }}
-              start={{ x: 0, y: 0 }} locations={[0, 0.75]}>
-              <Image
-                style={{ width: 25, height: 25 }}
-                source={require('./assets/chevron-right.png')} />
-            </LinearGradient>
-          </View>
-        </TouchableOpacity>
+        <SideBarEntry pressEvent={() => { navigation.navigate('Kvarovi', { name: 'Jane' }) }}>
+          <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Kvarovi</Text>
+          <ChevronRight />
+        </SideBarEntry>
+
+        <SideBarEntry pressEvent={() => { navigation.navigate('Radovi', { name: 'Jane' }) }}>
+          <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Radovi</Text>
+          <ChevronRight />
+        </SideBarEntry>
 
       </LinearGradient>
-
-    
     </View>
-
   )
 }
 
+function SideBarEntry(props) {
+
+  return (
+    <TouchableOpacity onPress={() => { props.pressEvent() }}>
+      <View style={styles.sideBarEntry}>
+        {props.children}
+      </View>
+    </TouchableOpacity>
+  )
+}
+
+function SideBarHeader(props){
+
+  return(
+    <View style={{ paddingTop: 50 }}>
+      <View style={{ alignItems: 'center', paddingLeft: 20, height: 60, flexDirection: 'row', justifyContent: 'space-between' }}>
+        {props.children}
+      </View>
+    </View>
+  )
+}
+
+
+function ChevronRight(props) {
+
+  return (
+    <LinearGradient colors={['#A47AFD', '#FEA280']} style={{ marginRight: 20, borderRadius: 20 }}
+      start={{ x: 0, y: 0 }} locations={[0, 0.75]}>
+      <Image
+        style={{ width: 25, height: 25 }}
+        source={require('./assets/chevron-right.png')} />
+    </LinearGradient>
+  )
+}
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'space-between',
@@ -389,5 +389,24 @@ const styles = StyleSheet.create({
     height: 30
 
 
+  },
+  sideBarEntry: {
+    alignItems: 'center',
+    paddingLeft: 20,
+    height: 60,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+    borderRadius: 15
+  },
+  categoryContainer: {
+
+    alignItems: 'center',
+    paddingLeft: 20,
+    height: 60,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderRadius: 10
   }
 });
