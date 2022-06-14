@@ -1,6 +1,6 @@
 
-import { Image, StyleSheet, Text, View, Button, Modal, TouchableWithoutFeedback, Linking } from 'react-native';
-
+import  { Image, StyleSheet, Text, View, Button, Modal, TouchableWithoutFeedback, Linking } from 'react-native';
+import React from 'react';
 export default function ModalWrapper(props) {
   const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
   const latLng = `${props.coordinates.latitude},${props.coordinates.longitude}`;
