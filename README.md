@@ -15,7 +15,7 @@ I developed using [Express.js](https://github.com/expressjs/express).
 
 
 ## To-do
-- [ ] Let the user set their neighbourhood so information about outages in that area appear in the card
+- [x] Let the user set their neighbourhood so information about outages in that area appear in the card
 - [ ] Add a settings page
 - [ ] Add the second page 
 - [ ] Remake the long press modal on street names
