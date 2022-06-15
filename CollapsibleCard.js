@@ -6,7 +6,7 @@ export default function CollapsibleCard(props){
     const [check, setCheck] = useState(true);
   
     return (
-      <LinearGradient colors={['#A47AFD','#FEA280']} style={[styles.gradient,{borderRadius:10}]}
+      <LinearGradient colors={['#A47AFD','#FEA280']} style={[styles.gradient,{borderRadius:10,elevation:5}]}
         start={{x:0,y:0}} locations={[0,0.75]}>
         <TouchableOpacity
           onPress={() => { setCheck(prevCheck => !prevCheck); }}
@@ -65,9 +65,10 @@ export default function CollapsibleCard(props){
       paddingRight: 10,
       paddingBottom: 5,
       paddingTop: 5,
-      marginBottom: 0,
+     
       marginRight:5,
-      marginLeft:5
+      marginLeft:5,
+      elevation:3
     },
     neighbourhoodTitlePressed: {
       flexDirection: 'row',

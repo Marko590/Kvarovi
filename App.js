@@ -4,7 +4,7 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Collapsible from 'react-native-collapsible';
 import 'react-native-gesture-handler';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { ScrollView } from 'react-native-gesture-handler';
 import { Pressable, select } from "@react-native-material/core";
 import axios from 'axios';
@@ -19,25 +19,20 @@ import CollapsibleCard from './CollapsibleCard';
 import ModalWrapper from './ModalWrapper';
 import SideMenu from 'react-native-side-menu';
 import { Menu } from 'react-native-paper';
-
-const TimeButton = (props) => {
-  const [check, setCheck] = useState(true);
-  const [myIndex, setMyIndex] = useState(0);
-
-  return (
-
-    <TouchableOpacity style={props.selectedIndex == props.index ? styles.timeButtonPressed : styles.timeButton} onPress={() => { setCheck(prevCheck => !prevCheck); props.setIndex(props.index) }} >
-      <Text style={props.selectedIndex == props.index ? styles.timeButtonTextPressed : styles.timeButtonText}>{props.time.trim()}</Text>
-    </TouchableOpacity>)
-}
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
+import  TimeButton from './TimeButton';
 
 
 const Kvarovi = (props) => {
 
-  const [streets, setStreets] = useState({});
+
+
+
+  const [chosen, setChosen] = useState("");
   const [selectedIndex, setIndex] = useState(0);
   const [data, setData] = useState({});
-  const [check, setCheck] = useState(true);
+ 
   const getData = () => {
     axios
       .get("http://192.168.0.31:8081/vodovod/kvarovi")
@@ -47,45 +42,66 @@ const Kvarovi = (props) => {
       });
   };
 
+  const readData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@storage_Key')
+      setChosen(value);
+      if (value !== null) {
+        // value previously stored
+      }
+    } catch (e) {
+      // error reading value
+    }
+  }
 
+
+
+  const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem('@storage_Key', value)
+    } catch (e) {
+      // saving error
+    }
+  }
+  useEffect(() => {
+    getData();
+    readData();
+  }, []);
+  const asdf = [1, 2, 3, 4]
 
   return (
     <View>
-      <LinearGradient colors={['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']} style={{ elevation: 10 }}
+      <LinearGradient colors={['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']} style={{ elevation: 10,justifyContent:'center',padding:10}}
         start={{ x: 0.75, y: 0.35 }} locations={[0, 0.1, 0.3, 0.45, 0.75]}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 50 }}>
-          <TouchableOpacity onPress={() => { props.setCheck(prevCheck => !prevCheck) }}>
+          <TouchableOpacity onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }}>
             <Image
-              style={[styles.topTabIcons, { marginLeft: 15, width: 25, height: 25, marginTop: 3 }]}
+              style={[styles.topTabIcons, {  width: 25, height: 25 }]}
               source={require('./assets/hamburger.png')} />
           </TouchableOpacity>
 
 
-          <Image style={[styles.topTabIcons, { marginRight: 15 }]} source={require('./assets/about.png')} on />
+          <Image style={[styles.topTabIcons, { }]} source={require('./assets/about.png')} on />
         </View>
-        <LinearGradient colors={['#FEA280', '#e79ca5', '#c391e1', '#b18cff']} style={{
-          height: 251, margin: 5, marginTop: 10, marginBottom: 20, borderRadius: 20, borderWidth: 1, borderColor: 'gray', elevation: 50, shadowOpacity: '20%', justifyContent: 'space-around', padding: 15, paddingTop: 0, shadowColor: "#000", shadowOffset: {
-            width: 0,
-            height: 10,
-          },
-          shadowOpacity: 0.51,
-          shadowRadius: 0.16,
-
-        }}
+        <LinearGradient colors={['#FEA280', '#e79ca5', '#c391e1', '#b18cff']} style={styles.localCard}
           start={{ x: 0.7, y: 0 }} locations={[0, 0.2, 0.6, 0.85]}>
-          <Text style={{ color: 'white', fontSize: 50, fontFamily: 'monospace' }}>Stari Grad</Text>
+          <Text style={{ color: 'white', fontSize: 50, fontFamily: 'monospace' }}>{chosen}</Text>
           <View>
-            <Text style={{ color: 'white', fontSize: 30, marginBottom: 30, fontFamily: 'sans-serif-light' }}>Broj kvarova u Vašem naselju:{selectedIndex}</Text>
+            <Text style={{ color: 'white', fontSize: 30, marginBottom: 30, fontFamily: 'sans-serif-light' }}>
+              Broj kvarova u Vašem naselju:{
+                data.at &&
+                data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length
+              }
+            </Text>
           </View>
         </LinearGradient>
 
         <View style={styles.buttonContainer}>
-          {data.map((a, index) => 
-            {
-              return (
-                <TimeButton time={a.time} setIndex={setIndex} index={index} selectedIndex={selectedIndex} />
-              )
-            })
+          {data.map && data.map((a, index) => {
+            return (
+              <TimeButton time={a.time} setIndex={setIndex} index={index} selectedIndex={selectedIndex} isAlone={data.length==1?true:false} />
+            )
+          })
           }
         </View>
 
@@ -93,26 +109,26 @@ const Kvarovi = (props) => {
           start={{ x: 0, y: 0 }} locations={[0.7, 1]}>
 
           <ScrollView showsVerticalScrollIndicator={false} overScrollMode='never' >
-            {data.at(selectedIndex).streets.map(neighbourhoodInfo => {
+            {data.at && data.at(selectedIndex).streets.map(neighbourhoodInfo => {
               return (
-                <ScrollView 
-                contentContainerStyle={{ paddingLeft: 10, paddingRight: 10, marginTop: 10, marginBottom: 10 }} 
-                showsVerticalScrollIndicator={false}
-                overScrollMode='never'>
+                <ScrollView
+                  contentContainerStyle={{ padding:15}}
+                  showsVerticalScrollIndicator={false}
+                  overScrollMode='never'>
                   <CollapsibleCard neighbourhood={neighbourhoodInfo.neighbourhood}>
-                    {neighbourhoodInfo.streetList.map(street => 
-                      {
-                      return(
-                        <StreetCard 
+                    {neighbourhoodInfo.streetList.map(street => {
+                      return (
+                        <StreetCard
                           style={neighbourhoodInfo.streetList.indexOf(street) == (neighbourhoodInfo.streetList.length - 1)
-                          ? styles.expandableCardLast
-                          : styles.expandableCard}
+                            ? styles.expandableCardLast
+                            : styles.expandableCard}
                           street={street} />
                       )
-                      })
-                    }     
-                    </CollapsibleCard>
-                </ScrollView>)})}
+                    })
+                    }
+                  </CollapsibleCard>
+                </ScrollView>)
+            })}
           </ScrollView>
         </LinearGradient>
         <StatusBar style="auto" />
@@ -126,17 +142,18 @@ const Radovi = (props) => {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']} 
+      <LinearGradient colors={['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']}
         style={styles.gradient}
-        start={{ x: 0.75, y: 0.35 }} 
+        start={{ x: 0.75, y: 0.35 }}
         locations={[0, 0.1, 0.3, 0.45, 0.75]}>
 
-        <TouchableOpacity onPress={() => { props.setCheck(prevCheck => !prevCheck) }}>
+        <TouchableOpacity onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }}>
           <Image
             style={[styles.topTabIcons, { marginLeft: 15, width: 25, height: 25, marginTop: 3 }]}
             source={require('./assets/hamburger.png')} />
         </TouchableOpacity>
-
+        <StatusBar style="auto" />
+        
       </LinearGradient>
 
     </View>
@@ -146,59 +163,53 @@ const Radovi = (props) => {
 
 
 export default function App() {
-  const Stack = createStackNavigator();
 
-  return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Kvarovi" component={KvaroviDrawer} />
-        <Stack.Screen name="Radovi" component={RadoviDrawer} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-
-const KvaroviDrawer = (props) => {
-  const navigation = useNavigation();
-  const menu = <SideBar />;
+  const [selectedIndex, setIndex] = useState(0);
   const [check, setCheck] = useState(false);
-  const [isOpen, setOpen] = useState('closed');
+
 
   return (
-    <SideMenu isOpen={check} menu={menu} animationFunction={(prop, value) =>
+    <SideMenu isOpen={check} menu={<SideBar setIndex={setIndex} />} animationFunction={(prop, value) =>
       Animated.spring(prop, {
         toValue: value,
         friction: 17,
         useNativeDriver: true,
       })}>
       <TouchableOpacity onPress={() => { setCheck(false) }} activeOpacity={1}>
-        <Kvarovi setCheck={setCheck} />
+        {selectedIndex === 0 ? <Kvarovi setDrawerCheck={setCheck} /> : <Radovi />}
+
       </TouchableOpacity>
     </SideMenu>
-  )
+  );
 }
 
-const RadoviDrawer = (props) => {
-  const navigation = useNavigation();
-  const menu = <SideBar/>;
-  const [check, setCheck] = useState(false);
-  const [isOpen, setOpen] = useState('closed');
-  return(
-    <SideMenu isOpen={check} menu={menu} 
-    animationFunction={(prop, value) =>
-      Animated.spring(prop, {
-        toValue: value,
-        friction: 8,
-        useNativeDriver: true,
-      })}>
-      <TouchableOpacity onPress={() => { setCheck(false) }} activeOpacity={1}>
-        <Radovi setCheck={setCheck} />
-      </TouchableOpacity>
-    </SideMenu>
-  )
-}
+
+
 const SideBar = (props) => {
-  const navigation = useNavigation();
+  const [chosen, setChosen] = useState("");
+
+  const readData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@storage_Key')
+      setChosen(value);
+      if (value !== null) {
+        // value previously stored
+      }
+    } catch (e) {
+      // error reading value
+    }
+  }
+
+  const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem('@storage_Key', value)
+    } catch (e) {
+      // saving error
+    }
+  }
+  useEffect(() => {
+    readData();
+  }, [])
   return (
     <View>
       <LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 10 }}
@@ -210,16 +221,15 @@ const SideBar = (props) => {
             <Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>Vodovod</Text>
           </View>
 
-          <SideBarEntry>
+          <SideBarEntry pressEvent={() => { props.setIndex(0) }}>
             <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Kvarovi</Text>
             <ChevronRight />
           </SideBarEntry>
 
-          <SideBarEntry>
+          <SideBarEntry pressEvent={() => { props.setIndex(1) }}>
             <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Radovi</Text>
             <ChevronRight />
           </SideBarEntry>
-
         </View>
       </LinearGradient>
 
@@ -229,18 +239,38 @@ const SideBar = (props) => {
         <SideBarHeader>
           <Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>Struja</Text>
         </SideBarHeader>
-        
 
-        <SideBarEntry pressEvent={() => { navigation.navigate('Kvarovi', { name: 'Jane' }) }}>
+
+        <SideBarEntry pressEvent={() => { }}>
           <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Kvarovi</Text>
           <ChevronRight />
         </SideBarEntry>
 
-        <SideBarEntry pressEvent={() => { navigation.navigate('Radovi', { name: 'Jane' }) }}>
+        <SideBarEntry pressEvent={() => { }}>
           <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Radovi</Text>
           <ChevronRight />
         </SideBarEntry>
 
+
+        <Picker
+          selectedValue={chosen}
+          onValueChange={(itemValue, itemIndex) => {
+            setChosen(itemValue);
+            storeData(itemValue)}}>
+          <Picker.Item label="Стари Град" value="Стари Град" />
+          <Picker.Item label="Савски Венац" value="Савски Венац" />
+          <Picker.Item label="Палилула" value="Палилула" />
+          <Picker.Item label="Звездара" value="Звездара" />
+          <Picker.Item label="Вождовац" value="Вождовац" />
+          <Picker.Item label="Чукарица" value="Чукарица" />
+          <Picker.Item label="Раковица" value="Раковица" />
+          <Picker.Item label="Нови Београд" value="Нови Београд" />
+          <Picker.Item label="Земун" value="Земун" />
+          <Picker.Item label="Гроцка" value="Гроцка" />
+          <Picker.Item label="Барајево" value="Барајево" />
+          <Picker.Item label="Сурчин" value="Сурчин" />
+
+        </Picker>
       </LinearGradient>
     </View>
   )
@@ -257,11 +287,11 @@ function SideBarEntry(props) {
   )
 }
 
-function SideBarHeader(props){
+function SideBarHeader(props) {
 
-  return(
+  return (
     <View style={{ paddingTop: 50 }}>
-      <View style={{ alignItems: 'center', paddingLeft: 20, height: 60, flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View style={styles.categoryContainer}>
         {props.children}
       </View>
     </View>
@@ -289,52 +319,7 @@ const styles = StyleSheet.create({
     height: 1080,
     marginBottom: 0,
   },
-  timeButtonText: {
-    fontFamily: 'sans-serif-light',
-    borderRadius: 120,
-    backgroundColor: '#ffffff',
-    height: '80%',
-    color: 'black',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 120,
-    elevation: 20
-  },
-  timeButton: {
-    alignSelf: 'center',
-    flexGrow: 1,
-    marginLeft: 5,
-    marginRight: 5,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    height: '90%',
-    elevation: 10
-  },
-  timeButtonPressed: {
-    alignSelf: 'center',
-    flexGrow: 1,
-    marginLeft: 5,
-    marginRight: 5,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    height: '90%',
 
-  },
-  timeButtonTextPressed: {
-    fontFamily: 'sans-serif-light',
-    borderRadius: 120,
-    backgroundColor: '#8c8b8b',
-    height: '80%',
-    color: 'white',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 120,
-    elevation: 20
-  },
   buttonContainer: {
     flexDirection: 'row',
     borderRadius: 15,
@@ -374,8 +359,7 @@ const styles = StyleSheet.create({
   cardHolder: {
     backgroundColor: '#f0e9e9',
     height: 350,
-    margin: 20,
-    marginTop: 20,
+    marginTop:20,
     borderRadius: 20,
     width: 320,
     alignSelf: 'center',
@@ -387,8 +371,6 @@ const styles = StyleSheet.create({
   topTabIcons: {
     width: 30,
     height: 30
-
-
   },
   sideBarEntry: {
     alignItems: 'center',
@@ -408,5 +390,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderRadius: 10
+  },
+  localCard: {
+    height: 251,
+    margin: 5,
+    marginTop: 10,
+    marginBottom: 20,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'gray',
+    elevation: 50,
+    shadowOpacity: '20%',
+    justifyContent: 'space-around',
+    padding: 15,
+    paddingTop: 0,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.51,
+    shadowRadius: 0.16,
   }
 });
