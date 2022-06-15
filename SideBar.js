@@ -2,98 +2,73 @@ import React, { useState, useEffect } from "react";
 import { TouchableOpacity,Text,StyleSheet,View,Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Picker } from "@react-native-picker/picker";
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import AreaPicker from "./AreaPicker";
 export default function SideBar (props)  {
-  const [chosen, setChosen] = useState("");
-
-  const readData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('@storage_Key')
-      setChosen(value);
-      if (value !== null) {
-        // value previously stored
-      }
-    } catch (e) {
-      // error reading value
+  
+	
+    const navigation = useNavigation();
+  
+    const moveToScreen = (screen) => {
+      navigation.navigate(screen);
     }
-  }
-
-  const storeData = async (value) => {
-    try {
-      await AsyncStorage.setItem('@storage_Key', value)
-    } catch (e) {
-      // saving error
-    }
-  }
-  useEffect(() => {
-    readData();
-  }, [])
-  return (
-    <View>
-      <LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 10 }}
-        start={{ x: 0, y: 0 }} locations={[0.82, 1]}>
-
-        <View style={{ paddingTop: 150 }}>
-
-          <View style={{ alignItems: 'center', paddingLeft: 20, height: 60, flexDirection: 'row', justifyContent: 'space-between' }}>
+    
+    return (
+      <View>
+        <LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 10, paddingTop: 50 }}
+          start={{ x: 0, y: 0 }} locations={[0.82, 1]}>
+  
+  
+  
+          <SideBarHeader>
             <Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>Vodovod</Text>
-          </View>
-
-          <SideBarEntry pressEvent={() => { props.setIndex(0) }}>
+          </SideBarHeader>
+  
+          <SideBarEntry pressEvent={() => {  props.setIndex(0) }}>
             <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Kvarovi</Text>
             <ChevronRight />
           </SideBarEntry>
-
+  
           <SideBarEntry pressEvent={() => { props.setIndex(1) }}>
             <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Radovi</Text>
             <ChevronRight />
           </SideBarEntry>
-        </View>
-      </LinearGradient>
+  
+  
+        </LinearGradient>
+  
+        <LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 10 }}
+          start={{ x: 0, y: 0 }} locations={[0.82, 1]}>
+  
+          <SideBarHeader>
+            <Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>Struja</Text>
+          </SideBarHeader>
+  
+  
+          <SideBarEntry pressEvent={() => { }}>
+            <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Kvarovi</Text>
+            <ChevronRight />
+          </SideBarEntry>
+  
+          <SideBarEntry pressEvent={() => { }}>
+            <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Radovi</Text>
+            <ChevronRight />
+          </SideBarEntry>
+          <View>
+          <TouchableOpacity onPress={()=>{props.setIndex(2)}}>
+          <Image 
+          source={require('./assets/settings.png')} 
+          style={{ width: 50, height: 50,  marginTop: 265,alignSelf:'flex-end' }} />
+          </TouchableOpacity>
+          </View>
+        </LinearGradient>
+        
+      </View>
+    )
+  }
 
-      <LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 10 }}
-        start={{ x: 0, y: 0 }} locations={[0.82, 1]}>
 
-        <SideBarHeader>
-          <Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>Struja</Text>
-        </SideBarHeader>
-
-
-        <SideBarEntry pressEvent={() => { }}>
-          <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Kvarovi</Text>
-          <ChevronRight />
-        </SideBarEntry>
-
-        <SideBarEntry pressEvent={() => { }}>
-          <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Radovi</Text>
-          <ChevronRight />
-        </SideBarEntry>
-
-
-        <Picker
-          selectedValue={chosen}
-          onValueChange={(itemValue, itemIndex) => {
-            setChosen(itemValue);
-            storeData(itemValue)}}>
-          <Picker.Item label="Стари Град" value="Стари Град" />
-          <Picker.Item label="Савски Венац" value="Савски Венац" />
-          <Picker.Item label="Палилула" value="Палилула" />
-          <Picker.Item label="Звездара" value="Звездара" />
-          <Picker.Item label="Вождовац" value="Вождовац" />
-          <Picker.Item label="Чукарица" value="Чукарица" />
-          <Picker.Item label="Раковица" value="Раковица" />
-          <Picker.Item label="Нови Београд" value="Нови Београд" />
-          <Picker.Item label="Земун" value="Земун" />
-          <Picker.Item label="Гроцка" value="Гроцка" />
-          <Picker.Item label="Барајево" value="Барајево" />
-          <Picker.Item label="Сурчин" value="Сурчин" />
-
-        </Picker>
-      </LinearGradient>
-    </View>
-  )
-}
-
-function SideBarEntry(props) {
+export function SideBarEntry(props) {
 
   return (
     <TouchableOpacity onPress={() => { props.pressEvent() }}>
@@ -104,7 +79,7 @@ function SideBarEntry(props) {
   )
 }
 
-function SideBarHeader(props) {
+export function SideBarHeader(props) {
 
   return (
     <View style={{ paddingTop: 50 }}>
@@ -116,7 +91,7 @@ function SideBarHeader(props) {
 }
 
 
-function ChevronRight(props) {
+export function ChevronRight(props) {
 
   return (
     <LinearGradient colors={['#A47AFD', '#FEA280']} style={{ marginRight: 20, borderRadius: 20 }}
