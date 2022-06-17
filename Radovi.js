@@ -62,17 +62,16 @@ export default function Radovi(props) {
 		getData();
 	}, []);
 	return (
-		<Background style={{ elevation: 10, justifyContent: 'center', padding: 10 }}>
-			<LinearGradient colors={['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']}
+		<Background style={{ elevation: 10, justifyContent: 'center'}}>
+			<LinearGradient colors={['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']}
 				style={styles.gradient}
 				start={{ x: 0.75, y: 0.35 }}
 				locations={[0, 0.1, 0.3, 0.45, 0.75]}>
-
 				<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 35 }}>
 					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/hamburger.png')} style={{marginTop:2,marginLeft:5}}/>
 					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/about.png')} style={{width:35,height:35,marginBottom:0,marginRight:5}} />
 				</View>
-				<ScrollView>
+				<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never'>
 
 				<StatusBar style="auto" />
 				{data.map && data.map((item, index) => {
@@ -85,14 +84,13 @@ export default function Radovi(props) {
 				}
 				)}
 				<LinearGradient colors={['#ffffff', '#cccccc']} style={[styles.cardHolder]}
-					start={{ x: 0, y: 0 }} locations={[0.7, 1]}>
-					<ScrollView persistentScrollbar overScrollMode='never'>
+					start={{ x: 0, y: 0 }} locations={[0.5, 1]}>
+					<ScrollView persistentScrollbar overScrollMode='never' >
 						{selectedIndex == -1 ? null : <RenderHTML source={{ html: content }} contentWidth={350} />}
 					</ScrollView>
 				</LinearGradient>
 				</ScrollView>
-			</LinearGradient>
-
+				</LinearGradient>
 		</Background>
 	)
 }
@@ -104,6 +102,7 @@ const styles = StyleSheet.create({
 	gradient: {
 		height: 830,
 		marginBottom: 0,
+		padding:10
 	},
 
 	buttonContainer: {
@@ -144,8 +143,8 @@ const styles = StyleSheet.create({
 	},
 	cardHolder: {
 		backgroundColor: '#f0e9e9',
-		height: 350,
-		marginTop: 10,
+		height: 320,
+		marginTop: 20,
 		borderRadius: 20,
 		width: 370,
 		alignSelf: 'center',

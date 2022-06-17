@@ -74,7 +74,7 @@ const Kvarovi = (props) => {
 
 	return (
 		<View>
-			<Background style={{ elevation: 10, justifyContent: 'center', padding: 10 }}>
+			<Background style={{ justifyContent: 'center', padding: 10 }}>
 				{/* View holding the top tab icons */}
 				<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 35 }}>
 					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/hamburger.png')} />
@@ -83,10 +83,10 @@ const Kvarovi = (props) => {
 
 				{/* Card displaying info about user's selected neighbourhood */}
 				<LinearGradient
-					colors={['#FEA280', '#e79ca5', '#c391e1', '#b18cff']}
+					colors={['#6D80D0',  '#7176d6','#886fd4','#9466c2' ]}
 					style={styles.localCard}
 					start={{ x: 0.7, y: 0 }}
-					locations={[0, 0.2, 0.6, 0.85]}>
+					locations={[0, 0.1, 0.5, 0.85]}>
 
 					<Text style={styles.chosenTextTitle}>{chosen}</Text>
 
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: 'gray',
 		elevation: 5,
-		marginBottom: 20
+		marginBottom: 35
 	},
 	topTabIcons: {
 		width: 30,
@@ -281,14 +281,14 @@ const styles = StyleSheet.create({
 		shadowRadius: 0.16,
 	},
 	chosenTextSubTitle: {
-		color: 'white',
+		color: '#d9d9d9',
 		fontSize: 30,
 		marginBottom: 30,
 		fontFamily: 'sans-serif-light'
 	},
 
 	chosenTextTitle: {
-		color: 'white',
+		color: '#d9d9d9',
 		fontSize: 50,
 		fontFamily: 'monospace'
 	}

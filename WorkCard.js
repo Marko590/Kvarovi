@@ -9,7 +9,7 @@ export default function WorkCard(props){
         props.setContent(props.content);
     }, []);
     return (
-      <LinearGradient colors={['#A47AFD','#FEA280']} style={[styles.gradient,{borderRadius:10,elevation:5}]}
+      <LinearGradient colors={['#8A5DB6','#99C5E1']} style={[styles.gradient,{borderRadius:10,elevation:5}]}
         start={{x:0,y:0}} locations={[0,0.75]}>
         
         <TouchableOpacity

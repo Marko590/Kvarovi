@@ -18,8 +18,8 @@ export default function SideBar (props)  {
         <LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 10, paddingTop: 50 }}
           start={{ x: 0, y: 0 }} locations={[0.82, 1]}>
   
-  
-  
+        
+        
           <SideBarHeader>
             <Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>Vodovod</Text>
           </SideBarHeader>
@@ -54,6 +54,7 @@ export default function SideBar (props)  {
             <Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Radovi</Text>
             <ChevronRight />
           </SideBarEntry>
+          </LinearGradient>
           <View>
           
             <View style={{marginTop:265,alignSelf:'flex-start'}}>
@@ -65,7 +66,7 @@ export default function SideBar (props)  {
           </View>
           
           </View>
-        </LinearGradient>
+        
         
       </View>
     )
@@ -98,7 +99,7 @@ export function SideBarHeader(props) {
 export function ChevronRight(props) {
 
   return (
-    <LinearGradient colors={['#A47AFD', '#FEA280']} style={{ marginRight: 20, borderRadius: 20 }}
+    <LinearGradient colors={['#8A5DB6','#99C5E1']} style={{ marginRight: 20, borderRadius: 20 }}
       start={{ x: 0, y: 0 }} locations={[0, 0.75]}>
       <Image
         style={{ width: 25, height: 25 }}

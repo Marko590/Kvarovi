@@ -26,5 +26,6 @@ I developed using [Express.js](https://github.com/expressjs/express).
 - [ ] Remake the long press modal on street names
 - [ ] Add info about electrical outages
 - [ ] Enable http requests
+- [ ] Add an about page
 - [ ] Translate hardcoded strings and make an English version
 - [ ] Enable the user to pick background colors for the gradient

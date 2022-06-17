@@ -19,7 +19,7 @@ export default function Settings(props) {
 		<LinearGradient colors={['#ffffff', '#dcdcdc']}
 			style={{ borderRadius: 10 }}
 			start={{ x: 0, y: 0 }} locations={[0, 1]}>
-			<LinearGradient colors={['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']}
+			<LinearGradient colors={['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']}
 				style={{ height: 86, backgroundColor: 'white', borderRadius: 20, paddingTop: 45 }}
 				start={{ x: 0.75, y: 0.35 }}
 				locations={[0, 0.1, 0.3, 0.45, 0.75]}>
@@ -49,8 +49,8 @@ export default function Settings(props) {
 
 
 				<View style={{
-					padding: 20, paddingLeft: 30,
-					paddingRight: 30,
+					padding: 20, paddingLeft: 20,
+					paddingRight: 20,
 					height: 60,
 					justifyContent: 'center',
 					borderBottomWidth: 1,
