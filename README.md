@@ -22,7 +22,7 @@ I developed using [Express.js](https://github.com/expressjs/express).
 ## To-do
 - [x] Let the user set their neighbourhood so information about outages in that area appear in the card
 - [x] Add a settings page
-- [ ] Add the second page 
+- [x] Add the second page 
 - [ ] Remake the long press modal on street names
 - [ ] Add info about electrical outages
 - [ ] Enable http requests
