@@ -14,9 +14,14 @@ The information is recieved from a [REST API](https://github.com/Marko590/Kvarov
 I developed using [Express.js](https://github.com/expressjs/express).
 
 
+![image](https://user-images.githubusercontent.com/62253006/173956825-3761dc0d-5542-483a-8a8a-ac1b83056906.png)
+![image](https://user-images.githubusercontent.com/62253006/173956847-560e3807-cfca-4ca7-a363-71643657d296.png)
+
+
+
 ## To-do
 - [x] Let the user set their neighbourhood so information about outages in that area appear in the card
-- [ ] Add a settings page
+- [x] Add a settings page
 - [ ] Add the second page 
 - [ ] Remake the long press modal on street names
 - [ ] Add info about electrical outages
