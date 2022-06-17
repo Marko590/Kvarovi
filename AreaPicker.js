@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Picker } from "@react-native-picker/picker";
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TransitionPresets } from "@react-navigation/stack";
 
 
 export default function AreaPicker(props){
@@ -27,6 +28,7 @@ export default function AreaPicker(props){
 			// saving error
 		}
 	}
+	
 	useEffect(() => {
 		readData();
 	}, [])

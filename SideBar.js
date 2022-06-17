@@ -55,11 +55,15 @@ export default function SideBar (props)  {
             <ChevronRight />
           </SideBarEntry>
           <View>
-          <TouchableOpacity onPress={()=>{props.setIndex(2)}}>
+          
+            <View style={{marginTop:265,alignSelf:'flex-start'}}>
+            <TouchableOpacity onPress={()=>{moveToScreen("Settings")}}>
           <Image 
           source={require('./assets/settings.png')} 
-          style={{ width: 50, height: 50,  marginTop: 265,alignSelf:'flex-end' }} />
+          style={{ width: 50, height: 50 }} />
           </TouchableOpacity>
+          </View>
+          
           </View>
         </LinearGradient>
         

@@ -1,28 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
-import { Animated, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Animated, Image, StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
+import { createStackNavigator, TransitionPresets,CardStyleInterpolators,
+  createStackNavigato } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { ScrollView } from 'react-native-gesture-handler';
-
 import axios from 'axios';
-
 import { LinearGradient } from 'expo-linear-gradient';
-
 import StreetCard from './StreetCard';
 import CollapsibleCard from './CollapsibleCard';
 import SideMenu from 'react-native-side-menu';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import TimeButton from './TimeButton';
 import Background from './Background';
-import SideBar from './SideBar';
+import SideBar, { SideBarEntry } from './SideBar';
 import AreaPicker from './AreaPicker';
-import SettingsSVG from './SettingsSVG';
-
+import Settings from './Settings';
+import Radovi from './Radovi';
 function TabIcon(props) {
 	return (
 		<TouchableOpacity
@@ -33,6 +28,7 @@ function TabIcon(props) {
 		</TouchableOpacity>
 	)
 }
+
 
 const Kvarovi = (props) => {
 
@@ -75,7 +71,6 @@ const Kvarovi = (props) => {
 		getData();
 		readData();
 	}, []);
-	const asdf = [1, 2, 3, 4]
 
 	return (
 		<View>
@@ -98,10 +93,10 @@ const Kvarovi = (props) => {
 					<View>
 						<Text style={styles.chosenTextSubTitle}>
 							Broj kvarova u Vašem naselju:
-							{
+							<Text> {
 								data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
 								data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length
-							}
+							}</Text>
 						</Text>
 					</View>
 
@@ -156,29 +151,15 @@ const Kvarovi = (props) => {
 };
 
 
-const Radovi = (props) => {
 
-	return (
-		<View style={styles.container}>
-			<LinearGradient colors={['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']}
-				style={styles.gradient}
-				start={{ x: 0.75, y: 0.35 }}
-				locations={[0, 0.1, 0.3, 0.45, 0.75]}>
-
-				<TouchableOpacity onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }}>
-					<Image source={require('./assets/hamburger.png')} style={styles.hamburger} />
-				</TouchableOpacity>
-				<StatusBar style="auto" />
-
-			</LinearGradient>
-
-		</View>
-	)
-}
 
 function Main() {
+
 	const [selectedIndex, setIndex] = useState(0);
 	const [check, setCheck] = useState(false);
+
+
+
 	return (
 		<SideMenu isOpen={check} menu={<SideBar setIndex={setIndex} />} animationFunction={(prop, value) =>
 			Animated.spring(prop, {
@@ -189,12 +170,12 @@ function Main() {
 			<TouchableOpacity
 				onPress={() => { setCheck(false) }}
 				activeOpacity={1}>
-					{
 				{
-          0: <Kvarovi setDrawerCheck={setCheck}/>,
-          1: <Radovi setDrawerCheck={setCheck}/>,
-		  2: <Settings setDrawerCheck={setCheck}/>
-        	}[selectedIndex]}
+					{
+						0: <Kvarovi setDrawerCheck={setCheck} />,
+						1: <Radovi setDrawerCheck={setCheck} />,
+						2: <Settings setDrawerCheck={setCheck} />
+					}[selectedIndex]}
 			</TouchableOpacity>
 		</SideMenu>
 	)
@@ -202,47 +183,23 @@ function Main() {
 
 export default function App() {
 	const Stack = createStackNavigator();
-
+	const [check,setCheck]=useState(false);
+	
 	return (
 		<NavigationContainer>
-			<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Navigator screenOptions={{ headerShown: false,  cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS}}>
 				<Stack.Screen name="Main" component={Main} />
-				<Stack.Screen name="Settings" component={Settings} />
+				<Stack.Screen name="Settings" component={Settings}  />
 			</Stack.Navigator>
 		</NavigationContainer>
 	)
 }
 
-function Settings(props) {
-
-	return (
-			<View>
-			<LinearGradient colors={['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']}
-				style={{padding:35,paddingBottom:0,height:86,backgroundColor:'white',justifyContent:'center',borderRadius:15,alignItems:'center'}}
-				start={{ x: 0.75, y: 0.35 }}
-				locations={[0, 0.1, 0.3, 0.45, 0.75]}>
-
-				<View>
-				<Text style={{fontSize:20,color:'white',fontFamily:'sans-serif-light'}}>Podešavanja</Text>
-				</View>
-				
-				<StatusBar style="auto" />
-
-			</LinearGradient>
-			<View style={{backgroundColor:'white',height:1080}}>
-
-			</View>
-			</View>
-	)
-}
-
-
-
 
 const styles = StyleSheet.create({
 	container: {
 		justifyContent: 'space-between',
-		
+
 	},
 	gradient: {
 		height: 1080,
@@ -301,25 +258,7 @@ const styles = StyleSheet.create({
 		width: 30,
 		height: 30
 	},
-	sideBarEntry: {
-		alignItems: 'center',
-		paddingLeft: 20,
-		height: 60,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		borderBottomWidth: 1,
-		borderBottomColor: 'black',
-		borderRadius: 15
-	},
-	categoryContainer: {
-
-		alignItems: 'center',
-		paddingLeft: 20,
-		height: 60,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		borderRadius: 10
-	},
+	
 	localCard: {
 		height: 251,
 		margin: 5,

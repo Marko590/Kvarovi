@@ -2,25 +2,30 @@ import {LinearGradient} from 'expo-linear-gradient';
 import { Image, StyleSheet, Text, View, Button, Modal, TouchableWithoutFeedback, Linking,TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from "react";
 import Collapsible from 'react-native-collapsible';
-export default function CollapsibleCard(props){
+export default function WorkCard(props){
     const [check, setCheck] = useState(true);
   
+    useEffect(() => {
+        props.setContent(props.content);
+    }, []);
     return (
       <LinearGradient colors={['#A47AFD','#FEA280']} style={[styles.gradient,{borderRadius:10,elevation:5}]}
         start={{x:0,y:0}} locations={[0,0.75]}>
+        
         <TouchableOpacity
-          onPress={() => { setCheck(prevCheck => !prevCheck); }}
-          style={check ? styles.neighbourhoodTitlePressed : styles.neighbourhoodTitle}
+          onPress={() => { setCheck(prevCheck => !prevCheck); props.setIndex(props.index); props.setContent(props.content) }}
+          style={props.selectedIndex==props.index ?  styles.neighbourhoodTitle:styles.neighbourhoodTitlePressed}
           elevation={10}>
             
           <Text style={styles.neighbourhoodText}>
             {props.neighbourhood}
           </Text>
   
-          {check ?
+          {props.selectedIndex==props.index ?
             <Image style={styles.arrowIcon} source={require('./assets/expand-more.png')} /> :
             <Image style={styles.arrowIcon} source={require('./assets/expand-less.png')} />}
-  
+
+
         </TouchableOpacity>
   
         <Collapsible collapsed={check} duration={200}>
@@ -40,11 +45,11 @@ export default function CollapsibleCard(props){
     gradient:{
       
       
-      
+      marginTop:20,
       borderRadius: 7,
       marginRight:15,
       marginLeft:15,
-      marginBottom: 0,
+      marginBottom: 10,
     },
     
     neighbourhoodText: {
@@ -81,7 +86,8 @@ export default function CollapsibleCard(props){
       paddingBottom: 5,
       paddingTop: 5,
       marginLeft:5,
-      marginRight:5
+      marginRight:5,
+      
     },
     arrowIcon: {
       marginTop: 4,
