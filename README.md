@@ -14,8 +14,10 @@ The information is recieved from a [REST API](https://github.com/Marko590/Kvarov
 I developed using [Express.js](https://github.com/expressjs/express).
 
 
-![image](https://user-images.githubusercontent.com/62253006/173956825-3761dc0d-5542-483a-8a8a-ac1b83056906.png)
-![image](https://user-images.githubusercontent.com/62253006/173956847-560e3807-cfca-4ca7-a363-71643657d296.png)
+![image](https://user-images.githubusercontent.com/62253006/174435519-9a62bfe7-23bf-4c8c-8660-874bc0accff1.png)
+![image](https://user-images.githubusercontent.com/62253006/174435529-1a728f34-3c7d-46e1-b24d-fe84c5dda3bd.png)
+![image](https://user-images.githubusercontent.com/62253006/174435538-ac557636-9ae2-451c-b203-40023ef2e9b2.png)
+![image](https://user-images.githubusercontent.com/62253006/174435543-9e081cc9-ee2a-4fe2-b535-22cb605e4ffa.png)
 
 
 
