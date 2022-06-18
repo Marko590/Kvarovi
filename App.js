@@ -1,8 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { Animated, Image, StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { createStackNavigator, TransitionPresets,CardStyleInterpolators,
-  createStackNavigato } from '@react-navigation/stack';
+import {
+	createStackNavigator, TransitionPresets, CardStyleInterpolators,
+	createStackNavigato
+} from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 import React, { useState, useEffect } from "react";
 import { ScrollView } from 'react-native-gesture-handler';
@@ -23,7 +25,7 @@ function TabIcon(props) {
 		<TouchableOpacity
 			onPress={() => { props.onPress() }}>
 			<Image
-				style={styles.topTabIcons}
+				style={[styles.topTabIcons,props.style]}
 				source={props.src} />
 		</TouchableOpacity>
 	)
@@ -32,7 +34,7 @@ function TabIcon(props) {
 
 const Kvarovi = (props) => {
 
-
+	const [streets, setStreets] = useState([]);
 	const [chosen, setChosen] = useState("");
 	const [selectedIndex, setIndex] = useState(0);
 	const [data, setData] = useState({});
@@ -75,76 +77,80 @@ const Kvarovi = (props) => {
 	return (
 		<View>
 			<Background style={{ justifyContent: 'center', padding: 10 }}>
-				{/* View holding the top tab icons */}
-				<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 35 }}>
-					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/hamburger.png')} />
-					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/about.png')} />
-				</View>
-
-				{/* Card displaying info about user's selected neighbourhood */}
-				<LinearGradient
-					colors={['#6D80D0',  '#7176d6','#886fd4','#9466c2' ]}
-					style={styles.localCard}
-					start={{ x: 0.7, y: 0 }}
-					locations={[0, 0.1, 0.5, 0.85]}>
-
-					<Text style={styles.chosenTextTitle}>{chosen}</Text>
-
-					<View>
-						<Text style={styles.chosenTextSubTitle}>
-							Broj kvarova u Vašem naselju:
-							<Text> {
-								data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
-								data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length
-							}</Text>
-						</Text>
+				<ScrollView>
+					{/* View holding the top tab icons */}
+					<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 35,padding:20,paddingBottom:0 }}>
+						<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/hamburger.png')} />
+						<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/about.png')} style={{width:35,height:35}} />
 					</View>
 
-				</LinearGradient>
+					{/* Card displaying info about user's selected neighbourhood */}
+					<LinearGradient
+						colors={['#6D80D0', '#7176d6', '#886fd4', '#9466c2']}
+						style={styles.localCard}
+						start={{ x: 0.7, y: 0 }}
+						locations={[0, 0.1, 0.5, 0.85]}>
 
-				{/* View holding the buttons indicating time*/}
-				<View style={styles.buttonContainer}>
-					{data.map && data.map((a, index) => {
-						return (
-							<TimeButton
-								time={a.time}
-								setIndex={setIndex}
-								index={index}
-								selectedIndex={selectedIndex}
-								isAlone={data.length == 1 ? true : false} />
-						)
-					})
-					}
-				</View>
+						<Text style={styles.chosenTextTitle}>{chosen}</Text>
 
-				{/* View holding the cards displaying the streets */}
-				<LinearGradient colors={['#ffffff', '#cccccc']} style={[styles.cardHolder]}
-					start={{ x: 0, y: 0 }} locations={[0.7, 1]}>
+						<View>
+							<Text style={styles.chosenTextSubTitle}>
+								Broj kvarova u Vašem naselju:
+								<Text> {
+									data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
+									data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length
+								}</Text>
+							</Text>
+						</View>
 
-					<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never' >
-						{data.at && data.at(selectedIndex).streets.map(neighbourhoodInfo => {
+					</LinearGradient>
+
+					{/* View holding the buttons indicating time*/}
+					<View style={styles.buttonContainer}>
+						{data.map && data.map((a, index) => {
 							return (
-								<ScrollView
-									contentContainerStyle={{ padding: 15 }}
-									showsVerticalScrollIndicator={false}
-									overScrollMode='never'>
-									<CollapsibleCard neighbourhood={neighbourhoodInfo.neighbourhood}>
-										{neighbourhoodInfo.streetList.map(street => {
-											return (
-												<StreetCard
-													style={neighbourhoodInfo.streetList.indexOf(street) == (neighbourhoodInfo.streetList.length - 1)
-														? styles.expandableCardLast
-														: styles.expandableCard}
-													street={street} />
-											)
-										})
-										}
-									</CollapsibleCard>
-								</ScrollView>)
-						})}
-					</ScrollView>
-				</LinearGradient>
-				<StatusBar style="auto" />
+								<TimeButton
+									time={a.time}
+									setIndex={setIndex}
+									index={index}
+									selectedIndex={selectedIndex}
+									isAlone={data.length == 1 ? true : false} />
+							)
+						})
+						}
+
+					</View>
+					
+
+					{/* View holding the cards displaying the streets */}
+					<LinearGradient colors={['#ffffff', '#cccccc']} style={[styles.cardHolder]}
+						start={{ x: 0, y: 0 }} locations={[0.7, 1]}>
+
+						<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never' >
+							{data.at && data.at(selectedIndex).streets.map(neighbourhoodInfo => {
+								return (
+									<ScrollView
+										contentContainerStyle={{ padding: 15 }}
+										showsVerticalScrollIndicator={false}
+										overScrollMode='never'>
+										<CollapsibleCard neighbourhood={neighbourhoodInfo.neighbourhood}>
+											{neighbourhoodInfo.streetList.map(street => {
+												return (
+													<StreetCard
+														style={neighbourhoodInfo.streetList.indexOf(street) == (neighbourhoodInfo.streetList.length - 1)
+															? styles.expandableCardLast
+															: styles.expandableCard}
+														street={street} />
+												)
+											})
+											}
+										</CollapsibleCard>
+									</ScrollView>)
+							})}
+						</ScrollView>
+					</LinearGradient>
+					<StatusBar style="auto" />
+				</ScrollView>
 			</Background>
 		</View>
 	);
@@ -183,13 +189,13 @@ function Main() {
 
 export default function App() {
 	const Stack = createStackNavigator();
-	const [check,setCheck]=useState(false);
-	
+	const [check, setCheck] = useState(false);
+
 	return (
 		<NavigationContainer>
-			<Stack.Navigator screenOptions={{ headerShown: false,  cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS}}>
+			<Stack.Navigator screenOptions={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}>
 				<Stack.Screen name="Main" component={Main} />
-				<Stack.Screen name="Settings" component={Settings}  />
+				<Stack.Screen name="Settings" component={Settings} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	)
@@ -258,7 +264,7 @@ const styles = StyleSheet.create({
 		width: 30,
 		height: 30
 	},
-	
+
 	localCard: {
 		height: 251,
 		margin: 5,

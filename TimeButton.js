@@ -10,7 +10,7 @@ export default function TimeButton(props) {
   return (
 
     <TouchableOpacity style={props.selectedIndex == props.index ? styles.timeButtonPressed : styles.timeButton} onPress={() => { setCheck(prevCheck => !prevCheck); props.setIndex(props.index) }} >
-      <Text style={props.selectedIndex == props.index ?(props.isAlone?styles.timeButtonTextPressed:styles.timeButtonTextPressedAlone) : styles.timeButtonText}>{props.time.trim()}</Text>
+      <Text style={props.selectedIndex == props.index ?styles.timeButtonTextPressed: styles.timeButtonText}>{props.time.trim()}</Text>
     </TouchableOpacity>)
 
 

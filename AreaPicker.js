@@ -40,7 +40,7 @@ export default function AreaPicker(props){
 					storeData(itemValue)
 				}}>
 				<Picker.Item label="Стари Град" value="Стари град" />
-				<Picker.Item label="Савски Венац" value="Савски Венац" />
+				<Picker.Item label="Савски венац" value="Савски венац" />
 				<Picker.Item label="Палилула" value="Палилула" />
 				<Picker.Item label="Звездара" value="Звездара" />
 				<Picker.Item label="Вождовац" value="Вождовац" />
