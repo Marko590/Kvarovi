@@ -20,6 +20,8 @@ import SideBar, { SideBarEntry } from './SideBar';
 import AreaPicker from './AreaPicker';
 import Settings from './Settings';
 import Radovi from './Radovi';
+import * as NavigationBar from 'expo-navigation-bar';
+
 function TabIcon(props) {
 	return (
 		<TouchableOpacity
@@ -77,7 +79,7 @@ const Kvarovi = (props) => {
 	return (
 		<View>
 			<Background style={{ justifyContent: 'center', padding: 10 }}>
-				<ScrollView>
+				
 					{/* View holding the top tab icons */}
 					<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 35,padding:20,paddingBottom:0 }}>
 						<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/hamburger.png')} />
@@ -150,7 +152,7 @@ const Kvarovi = (props) => {
 						</ScrollView>
 					</LinearGradient>
 					<StatusBar style="auto" />
-				</ScrollView>
+			
 			</Background>
 		</View>
 	);
@@ -163,6 +165,7 @@ function Main() {
 
 	const [selectedIndex, setIndex] = useState(0);
 	const [check, setCheck] = useState(false);
+	NavigationBar.setBackgroundColorAsync("#8fc3e3");
 
 
 

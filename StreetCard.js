@@ -43,7 +43,7 @@ export default function StreetCard(props) {
         ▫️ {props.street}
       </Text>
 
-      <ModalWrapper street={props.street} check={check} setCheck={setCheck} coordinates={coordinates} setMapCheck={setMapCheck} />
+      <ModalWrapper street={props.street} check={check} setCheck={setCheck} coordinates={coordinates} setMapCheck={setMapCheck}  />
 
 
     </Pressable>
@@ -53,3 +53,4 @@ export default function StreetCard(props) {
 
 
 }
+

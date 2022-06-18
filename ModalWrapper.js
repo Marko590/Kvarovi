@@ -1,6 +1,10 @@
+import { BlurView } from 'expo-blur';
+import { Image, StyleSheet, Text, View, Modal, TouchableWithoutFeedback, Linking, Share } from 'react-native';
+import React, { useEffect, useState } from 'react';
 
-import  { Image, StyleSheet, Text, View, Button, Modal, TouchableWithoutFeedback, Linking } from 'react-native';
-import React from 'react';
+import { Button } from 'react-native-paper';
+import { LinearGradient } from 'expo-linear-gradient';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 export default function ModalWrapper(props) {
   const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
   const latLng = `${props.coordinates.latitude},${props.coordinates.longitude}`;
@@ -9,6 +13,14 @@ export default function ModalWrapper(props) {
     ios: `${scheme}${label}@${latLng}`,
     android: `${scheme}${latLng}(${label})`
   });
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  let message={message:''}
+  useEffect(() => {
+    setLatitude(props.coordinates.latitude);
+    setLongitude(props.coordinates.longitude);
+    message={message:longitude+'\n'+latitude}
+  })
   return (
     <View>
       <Modal
@@ -20,17 +32,46 @@ export default function ModalWrapper(props) {
           props.setCheck(prevCheck => !prevCheck)
 
         }}>
-
+        {/* Linking.openURL(url); */}
 
         <TouchableWithoutFeedback onPress={() => {
           props.setCheck(prevCheck => !prevCheck);
         }}>
-          <View style={{ flex: 1, justifyContent: 'flex-end' }} >
+          <View style={{ flex: 1, justifyContent: 'flex-end', elevation: 10 }} >
             <TouchableWithoutFeedback onPress={() => { }}>
-              <View>
-                <Button onPress={() => { Linking.openURL(url); }} title="Close" />
-                <Text>{props.coordinates.latitude} {props.coordinates.longitude}</Text>
-              </View>
+              <LinearGradient colors={['#ffffff', '#a8a8a8']} style={{
+                elevation: 10,
+                height: '20%',
+                width: '98%',
+                alignSelf: 'center',
+                backgroundColor: 'white',
+                flexDirection: 'row',
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                borderWidth: 2,
+                borderBottomWidth: 0,
+                borderColor: '#a8a8a8'
+              }}
+                start={{ x: 0, y: 0 }} locations={[0.7, 1]}>
+
+
+                <View style={{ height: '80%', alignSelf: 'center', justifyContent: 'space-between', width: '100%', padding: 10, paddingTop: 0, paddingLeft: 20 }}>
+                  <Text style={{ marginLeft: 5, alignSelf: 'flex-start', fontSize: 25, flex: 1 }}>{props.street}</Text>
+                  <View style={{ flexDirection: 'column', flex: 1, alignItems: 'flex-start', justifyContent: 'flex-end' }}>
+
+                  </View>
+                  <View style={styles.buttonContainer}>
+                    <Button icon="map-marker" style={{ borderRadius: 30, marginRight: 10, width: '45%' }} mode="contained" onPress={() => Linking.openURL(url)}>
+                      Na mapi
+                    </Button>
+                    <Button icon="share" style={{ borderRadius: 30, width: '45%' }} mode="outlined" onPress={() => Share.share(message)}>
+                      Podeli
+                    </Button>
+
+                  </View>
+                </View>
+
+              </LinearGradient>
             </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>
@@ -38,20 +79,31 @@ export default function ModalWrapper(props) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
+  buttonContainer: {
+    flexDirection: 'row',
+    borderRadius: 15,
+
+    marginBottom: 5,
+    justifyContent: 'flex-start',
+
+    marginRight: 10,
+
+  },
   container: {
     flex: 1,
-    
+
     justifyContent: 'space-between',
 
   },
-  gradient:{
-    
-    
-    
+  gradient: {
+
+
+
     borderRadius: 7,
-    marginRight:15,
-    marginLeft:15,
+    marginRight: 15,
+    marginLeft: 15,
     marginBottom: 0,
   },
   expandableCardLast: {
@@ -95,8 +147,8 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingTop: 5,
     marginBottom: 0,
-    marginRight:5,
-    marginLeft:5
+    marginRight: 5,
+    marginLeft: 5
   },
   neighbourhoodTitlePressed: {
     flexDirection: 'row',
@@ -108,8 +160,8 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingBottom: 5,
     paddingTop: 5,
-    marginLeft:5,
-    marginRight:5
+    marginLeft: 5,
+    marginRight: 5
   },
   arrowIcon: {
     marginTop: 4,
@@ -117,7 +169,7 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
     alignSelf: 'flex-start',
-    
+
   },
   timeTitle: {
     marginBottom: 10,
@@ -129,7 +181,7 @@ const styles = StyleSheet.create({
   },
   timeTitleRipple: {
     borderRadius: 10,
-    
+
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     paddingBottom: 0,

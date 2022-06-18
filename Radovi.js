@@ -42,7 +42,7 @@ export default function Radovi(props) {
 	const [data, setData] = useState({});
 	const [html, setHtml] = useState([]);
 	const [content, setContent] = useState("");
-	const [selectedIndex, setIndex] = useState(0);
+	const [selectedIndex, setIndex] = useState(-1);
 	const getData = () => {
 		axios
 			.get("http://192.168.0.31:8081/vodovod/radovi")
@@ -83,6 +83,7 @@ export default function Radovi(props) {
 					)
 				}
 				)}
+			
 				<LinearGradient colors={['#ffffff', '#cccccc']} style={[styles.cardHolder]}
 					start={{ x: 0, y: 0 }} locations={[0.5, 1]}>
 					<ScrollView persistentScrollbar overScrollMode='never' >
