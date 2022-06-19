@@ -1,10 +1,33 @@
 import {LinearGradient} from 'expo-linear-gradient';
-import { Image, StyleSheet, Text, View, Button, Modal, TouchableWithoutFeedback, Linking,TouchableOpacity } from 'react-native';
+import { Easing,Animated,Image, StyleSheet, Text, View, Button, Modal, TouchableWithoutFeedback, Linking,TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from "react";
 import Collapsible from 'react-native-collapsible';
 export default function WorkCard(props){
     const [check, setCheck] = useState(true);
-  
+    const animation = useState(new Animated.Value(0))[0];
+    const downAnimation=()=>{
+      animation.setValue(1);
+      Animated.timing(animation, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver:true,
+        easing: Easing.linear,
+      }).start();
+    }
+    const upAnimation=()=>{
+      animation.setValue(0);
+      Animated.timing(animation, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver:true,
+        easing: Easing.linear,
+      }).start();
+    }
+    
+    const RotateData = animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['180deg', '0deg'],
+    });
     useEffect(() => {
         props.setContent(props.content);
     }, []);
@@ -20,10 +43,9 @@ export default function WorkCard(props){
           <Text style={styles.neighbourhoodText}>
             {props.neighbourhood}
           </Text>
-  
+          <Animated.Image style={[styles.arrowIcon,{transform: [{ rotate: RotateData }]}]} source={require('./assets/expand-more.png')} /> 
           {props.selectedIndex==props.index ?
-            <Image style={styles.arrowIcon} source={require('./assets/expand-more.png')} /> :
-            <Image style={styles.arrowIcon} source={require('./assets/expand-less.png')} />}
+           downAnimation():upAnimation()}
 
 
         </TouchableOpacity>

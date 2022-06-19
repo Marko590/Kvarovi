@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import { Animated, Image, StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
+import { Animated, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import {
 	createStackNavigator, TransitionPresets, CardStyleInterpolators,
-	createStackNavigato
+
 } from '@react-navigation/stack';
+
+
 import 'react-native-gesture-handler';
+import { Button } from 'react-native-paper';
 import React, { useState, useEffect } from "react";
 import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'axios';
@@ -27,7 +30,7 @@ function TabIcon(props) {
 		<TouchableOpacity
 			onPress={() => { props.onPress() }}>
 			<Image
-				style={[styles.topTabIcons,props.style]}
+				style={[styles.topTabIcons, props.style]}
 				source={props.src} />
 		</TouchableOpacity>
 	)
@@ -78,81 +81,102 @@ const Kvarovi = (props) => {
 
 	return (
 		<View>
-			<Background style={{ justifyContent: 'center', padding: 10 }}>
-				
-					{/* View holding the top tab icons */}
-					<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 35,padding:20,paddingBottom:0 }}>
-						<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/hamburger.png')} />
-						<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/about.png')} style={{width:35,height:35}} />
+			<Background style={{ justifyContent: 'center' }}>
+
+				{/* View holding the top tab icons */}
+				<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 35, padding: 10, paddingBottom: 0 }}>
+					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/hamburger.png')} style={{ marginTop: 1 }} />
+					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/about.png')} style={{ width: 35, height: 35 }} />
+				</View>
+
+				{/* Card displaying info about user's selected neighbourhood */}
+				<LinearGradient
+					colors={['#746CE4', '#8066de', '#945bd4', '#AD62D5']}
+					style={styles.localCard}
+					start={{ x: 0.5, y: 0 }}
+					locations={[0, 0.3, 0.6, 1]}>
+					<View style={{ flex: 1, flexDirection: 'row', padding: 10,paddingBottom:20,paddingLeft: 0, }}>
+						<Text style={[styles.chosenTextTitle, { flex: 3 }]}>{chosen}</Text>
+						<LinearGradient
+							colors={['#B3292B', '#bd3b2c', '#d2602f', '#DF7630']}
+							start={{ x: 0, y: 0 }}
+							locations={[0, 0.1, 0.5, 0.85]} 
+							style={{borderRadius:10,height:45, flex: 1,alignSelf:'auto',justifyContent:'center'}}>
+								<Button 
+									labelStyle={{fontSize:20}}
+									color='white' 
+									icon="traffic-cone"
+							 		style={{ borderRadius: 30}} 
+									mode="text">
+								 {data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
+								data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length}
+                    			</Button>
+							
+						</LinearGradient>
+					</View>
+					<View style={{ flex: 2.5, justifyContent: 'flex-start' }}>
+						<Text style={[styles.chosenTextSubTitle]}>			
+							<View style={{ flex: 2 }}>
+								<Text style={styles.chosenTextSubTitle}>Ulice u kojima se nalaze radovi:</Text>
+								{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.map(item => {
+									return (
+										<Text style={{ color: '#d9d9d9',fontSize:20 }}>	▫️ {item.trim()}</Text>
+									)
+								})}
+
+							</View>
+
+						</Text>
 					</View>
 
-					{/* Card displaying info about user's selected neighbourhood */}
-					<LinearGradient
-						colors={['#6D80D0', '#7176d6', '#886fd4', '#9466c2']}
-						style={styles.localCard}
-						start={{ x: 0.7, y: 0 }}
-						locations={[0, 0.1, 0.5, 0.85]}>
+				</LinearGradient>
 
-						<Text style={styles.chosenTextTitle}>{chosen}</Text>
+				{/* View holding the buttons indicating time*/}
+				<View style={styles.buttonContainer}>
+					{data.map && data.map((a, index) => {
+						return (
+							<TimeButton
+								time={a.time}
+								setIndex={setIndex}
+								index={index}
+								selectedIndex={selectedIndex}
+								isAlone={data.length == 1 ? true : false} />
+						)
+					})
+					}
 
-						<View>
-							<Text style={styles.chosenTextSubTitle}>
-								Broj kvarova u Vašem naselju:
-								<Text> {
-									data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
-									data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length
-								}</Text>
-							</Text>
-						</View>
+				</View>
 
-					</LinearGradient>
 
-					{/* View holding the buttons indicating time*/}
-					<View style={styles.buttonContainer}>
-						{data.map && data.map((a, index) => {
+				{/* View holding the cards displaying the streets */}
+				<LinearGradient colors={['#fcfcfc', '#aaaaaa']} style={[styles.cardHolder]}
+					start={{ x: 0, y: 0 }} locations={[0.7, 1]}>
+
+					<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never' >
+						{data.at && data.at(selectedIndex).streets.map(neighbourhoodInfo => {
 							return (
-								<TimeButton
-									time={a.time}
-									setIndex={setIndex}
-									index={index}
-									selectedIndex={selectedIndex}
-									isAlone={data.length == 1 ? true : false} />
-							)
-						})
-						}
+								<ScrollView
+									contentContainerStyle={{ padding: 15 }}
+									showsVerticalScrollIndicator={false}
+									overScrollMode='never'>
+									<CollapsibleCard neighbourhood={neighbourhoodInfo.neighbourhood}>
+										{neighbourhoodInfo.streetList.map(street => {
+											return (
+												<StreetCard
+													style={neighbourhoodInfo.streetList.indexOf(street) == (neighbourhoodInfo.streetList.length - 1)
+														? styles.expandableCardLast
+														: styles.expandableCard}
+													street={street} />
+											)
+										})
+										}
+									</CollapsibleCard>
+								</ScrollView>)
+						})}
+					</ScrollView>
+				</LinearGradient>
+				<StatusBar style="auto" />
 
-					</View>
-					
-
-					{/* View holding the cards displaying the streets */}
-					<LinearGradient colors={['#ffffff', '#cccccc']} style={[styles.cardHolder]}
-						start={{ x: 0, y: 0 }} locations={[0.7, 1]}>
-
-						<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never' >
-							{data.at && data.at(selectedIndex).streets.map(neighbourhoodInfo => {
-								return (
-									<ScrollView
-										contentContainerStyle={{ padding: 15 }}
-										showsVerticalScrollIndicator={false}
-										overScrollMode='never'>
-										<CollapsibleCard neighbourhood={neighbourhoodInfo.neighbourhood}>
-											{neighbourhoodInfo.streetList.map(street => {
-												return (
-													<StreetCard
-														style={neighbourhoodInfo.streetList.indexOf(street) == (neighbourhoodInfo.streetList.length - 1)
-															? styles.expandableCardLast
-															: styles.expandableCard}
-														street={street} />
-												)
-											})
-											}
-										</CollapsibleCard>
-									</ScrollView>)
-							})}
-						</ScrollView>
-					</LinearGradient>
-					<StatusBar style="auto" />
-			
 			</Background>
 		</View>
 	);
@@ -269,17 +293,19 @@ const styles = StyleSheet.create({
 	},
 
 	localCard: {
-		height: 251,
+		height: '30%',
 		margin: 5,
 		marginTop: 10,
-		marginBottom: 20,
+		marginLeft: 15,
+		marginRight: 15,
 		borderRadius: 20,
 		borderWidth: 1,
 		borderColor: 'gray',
 		elevation: 50,
 		shadowOpacity: '20%',
-		justifyContent: 'space-around',
-		padding: 15,
+		alignContent: 'center',
+		paddingLeft: 15,
+		paddingRight: 15,
 		paddingTop: 0,
 		shadowColor: "#000",
 		shadowOffset: {
@@ -288,17 +314,19 @@ const styles = StyleSheet.create({
 		},
 		shadowOpacity: 0.51,
 		shadowRadius: 0.16,
+		flexDirection: 'column'
 	},
 	chosenTextSubTitle: {
 		color: '#d9d9d9',
-		fontSize: 30,
-		marginBottom: 30,
+		fontSize: 20,
+		marginBottom:10,
 		fontFamily: 'sans-serif-light'
 	},
 
 	chosenTextTitle: {
 		color: '#d9d9d9',
-		fontSize: 50,
-		fontFamily: 'monospace'
+		fontSize: 35,
+		fontFamily: 'monospace',
+		alignSelf: 'flex-start'
 	}
 });

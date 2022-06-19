@@ -20,7 +20,7 @@ export default function Settings(props) {
 			style={{ borderRadius: 10 }}
 			start={{ x: 0, y: 0 }} locations={[0, 1]}>
 			<LinearGradient colors={['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']}
-				style={{ height: 86, backgroundColor: 'white', borderRadius: 20, paddingTop: 45 }}
+				style={{ height: 86, backgroundColor: 'white', borderRadius: 20, paddingTop: 45,borderTopLeftRadius:0,borderTopRightRadius:0}}
 				start={{ x: 0.75, y: 0.35 }}
 				locations={[0, 0.1, 0.3, 0.45, 0.75]}>
 

@@ -40,7 +40,7 @@ export default function StreetCard(props) {
         }}
         style={{ fontFamily: 'sans-serif-medium', color: 'white' }}>
 
-        ▫️ {props.street}
+        ▫️ {props.street.trim()}
       </Text>
 
       <ModalWrapper street={props.street} check={check} setCheck={setCheck} coordinates={coordinates} setMapCheck={setMapCheck}  />

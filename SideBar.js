@@ -15,7 +15,7 @@ export default function SideBar (props)  {
     
     return (
       <View>
-        <LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 10, paddingTop: 50 }}
+        <LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 10, paddingTop: 100 }}
           start={{ x: 0, y: 0 }} locations={[0.82, 1]}>
   
         
@@ -55,17 +55,12 @@ export default function SideBar (props)  {
             <ChevronRight />
           </SideBarEntry>
           </LinearGradient>
-          <View>
-          
-            <View style={{marginTop:265,alignSelf:'flex-start'}}>
-            <TouchableOpacity onPress={()=>{moveToScreen("Settings")}}>
+          <TouchableOpacity onPress={()=>{moveToScreen("Settings")}}>
           <Image 
           source={require('./assets/settings.png')} 
-          style={{ width: 50, height: 50 }} />
+          style={{ width: 50, height: 50 ,marginTop:210,marginLeft:20}} />
           </TouchableOpacity>
-          </View>
           
-          </View>
         
         
       </View>

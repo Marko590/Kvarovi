@@ -67,9 +67,9 @@ export default function Radovi(props) {
 				style={styles.gradient}
 				start={{ x: 0.75, y: 0.35 }}
 				locations={[0, 0.1, 0.3, 0.45, 0.75]}>
-				<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 35 }}>
-					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/hamburger.png')} style={{marginTop:2,marginLeft:5}}/>
-					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/about.png')} style={{width:35,height:35,marginBottom:0,marginRight:5}} />
+				<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 35,padding:10,paddingBottom:0 }}>
+					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/hamburger.png')} />
+					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/about.png')} style={{width:35,height:35,marginBottom:0}} />
 				</View>
 				<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never'>
 
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
 	gradient: {
 		height: 830,
 		marginBottom: 0,
-		padding:10
+		
 	},
 
 	buttonContainer: {

@@ -1,15 +1,38 @@
 import {LinearGradient} from 'expo-linear-gradient';
-import { Image, StyleSheet, Text, View, Button, Modal, TouchableWithoutFeedback, Linking,TouchableOpacity } from 'react-native';
+import { Easing,Animated,Image, StyleSheet, Text, View, Button, Modal, TouchableWithoutFeedback, Linking,TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from "react";
 import Collapsible from 'react-native-collapsible';
 export default function CollapsibleCard(props){
     const [check, setCheck] = useState(true);
-  
+    const animation = useState(new Animated.Value(1))[0];
+    const downAnimation=()=>{
+      animation.setValue(1);
+      Animated.timing(animation, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver:true,
+        easing: Easing.bounce,
+      }).start();
+    }
+    const upAnimation=()=>{
+      animation.setValue(0);
+      Animated.timing(animation, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver:true,
+        easing: Easing.linear,
+      }).start();
+    }
+    
+    const RotateData = animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['180deg', '0deg'],
+    });
     return (
       <LinearGradient colors={['#8A5DB6','#99C5E1']} style={[styles.gradient,{borderRadius:10,elevation:5}]}
         start={{x:0,y:0}} locations={[0,0.65]}>
         <TouchableOpacity
-          onPress={() => { setCheck(prevCheck => !prevCheck); }}
+          onPress={() => { setCheck(prevCheck => !prevCheck); if(check){downAnimation()}else{upAnimation()} }}
           style={check ? styles.neighbourhoodTitlePressed : styles.neighbourhoodTitle}
           elevation={10}>
             
@@ -17,13 +40,13 @@ export default function CollapsibleCard(props){
             {props.neighbourhood}
           </Text>
   
-          {check ?
-            <Image style={styles.arrowIcon} source={require('./assets/expand-more.png')} /> :
-            <Image style={styles.arrowIcon} source={require('./assets/expand-less.png')} />}
+         
+            <Animated.Image style={[styles.arrowIcon,{transform: [{ rotate: RotateData }]}]} source={require('./assets/expand-more.png')} /> 
+           
   
         </TouchableOpacity>
   
-        <Collapsible collapsed={check} duration={200}>
+        <Collapsible collapsed={check} duration={300}>
           {props.children}
         </Collapsible>
   
