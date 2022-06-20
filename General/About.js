@@ -7,7 +7,7 @@ export default function About(props) {
 
 
 	return (
-		<Background style={[styles.gradient, { padding: 20, alignContent: 'center', paddingTop: '50%' }]}>
+		<Background style={styles.background}>
 
 			<Text style={[styles.chosenTextTitle, { alignSelf: 'flex-start' }]}>
 				Аутор:
@@ -56,7 +56,10 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 
 	},
-	gradient: {
+	background: {
+		padding: 20,
+		alignContent: 'center',
+		paddingTop: '50%',
 		height: '100%',
 		width: '100%'
 	},
