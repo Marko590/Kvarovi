@@ -1,12 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { Animated, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import {Dimensions, Animated, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import {
-	createStackNavigator, TransitionPresets, CardStyleInterpolators,
-
-} from '@react-navigation/stack';
-
-
+import {createStackNavigator, CardStyleInterpolators} from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 import { Button } from 'react-native-paper';
 import React, { useState, useEffect } from "react";
@@ -19,11 +14,14 @@ import SideMenu from 'react-native-side-menu';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TimeButton from './TimeButton';
 import Background from './Background';
-import SideBar, { SideBarEntry } from './SideBar';
-import AreaPicker from './AreaPicker';
+import SideBar from './SideBar';
 import Settings from './Settings';
 import Radovi from './Radovi';
 import * as NavigationBar from 'expo-navigation-bar';
+import About from './About';
+import TopTab from './TopTab';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 function TabIcon(props) {
 	return (
@@ -39,11 +37,14 @@ function TabIcon(props) {
 
 const Kvarovi = (props) => {
 
-	const [streets, setStreets] = useState([]);
 	const [chosen, setChosen] = useState("");
 	const [selectedIndex, setIndex] = useState(0);
 	const [data, setData] = useState({});
-
+	const navigation = useNavigation();
+  
+    const moveToScreen = (screen) => {
+      navigation.navigate(screen);
+    }
 	const getData = () => {
 		axios
 			.get("http://192.168.0.31:8081/vodovod/kvarovi")
@@ -64,68 +65,77 @@ const Kvarovi = (props) => {
 			// error reading value
 		}
 	}
-
-
-
-	const storeData = async (value) => {
-		try {
-			await AsyncStorage.setItem('@storage_Key', value)
-		} catch (e) {
-			// saving error
-		}
-	}
+	
 	useEffect(() => {
 		getData();
 		readData();
 	}, []);
 
+	const nightColors=['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']
+	
+	const dayColors=['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']
 	return (
 		<View>
 			<Background style={{ justifyContent: 'center' }}>
 
 				{/* View holding the top tab icons */}
-				<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 35, padding: 10, paddingBottom: 0 }}>
-					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/hamburger.png')} style={{ marginTop: 1 }} />
-					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/about.png')} style={{ width: 35, height: 35 }} />
-				</View>
+				<TopTab setDrawerCheck={props.setDrawerCheck}/>
 
 				{/* Card displaying info about user's selected neighbourhood */}
 				<LinearGradient
-					colors={['#746CE4', '#8066de', '#945bd4', '#AD62D5']}
+					colors={nightColors}
 					style={styles.localCard}
 					start={{ x: 0.5, y: 0 }}
-					locations={[0, 0.3, 0.6, 1]}>
-					<View style={{ flex: 1, flexDirection: 'row', padding: 10,paddingBottom:20,paddingLeft: 0, }}>
-						<Text style={[styles.chosenTextTitle, { flex: 3 }]}>{chosen}</Text>
+					locations={[0,0.25,0.5,0.75,1]}>
+					<View style={{ flex: 1.5, flexDirection: 'row'}}>
+
+						<Text
+						style={[styles.chosenTextTitle, { flex: 4,right:'5%' }]}>
+							{chosen}
+						</Text>
+
+						{/* Label showing the number of malfunctions in the selected area*/}
 						<LinearGradient
 							colors={['#B3292B', '#bd3b2c', '#d2602f', '#DF7630']}
-							start={{ x: 0, y: 0 }}
-							locations={[0, 0.1, 0.5, 0.85]} 
-							style={{borderRadius:10,height:45, flex: 1,alignSelf:'auto',justifyContent:'center'}}>
+							start={{ x: 0, y: -0.2 }}
+							locations={[0, 0.2, 0.65, 0.85]} 
+							style={{borderRadius:10,height:45,alignSelf:'flex-start',justifyContent:'center',flex:0.85}}>
 								<Button 
-									labelStyle={{fontSize:20}}
+									labelStyle={{fontSize:20,flexDirection:'row',bottom:'10%',right:'10%'}}
 									color='white' 
 									icon="traffic-cone"
 							 		style={{ borderRadius: 30}} 
 									mode="text">
-								 {data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
-								data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length}
-                    			</Button>
-							
+									<Text style={{fontSize:25}}>
+										{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
+										data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length?
+										data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length:
+										0}
+									</Text>
+								</Button>
+								
 						</LinearGradient>
+						
 					</View>
-					<View style={{ flex: 2.5, justifyContent: 'flex-start' }}>
+
+					{/* Subtitle containing the streets affected by repairs */}
+					<View style={{ flex: 2, justifyContent: 'flex-start' }}>
 						<Text style={[styles.chosenTextSubTitle]}>			
 							<View style={{ flex: 2 }}>
-								<Text style={styles.chosenTextSubTitle}>Ulice u kojima se nalaze radovi:</Text>
-								{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.map(item => {
+								<Text style={styles.chosenTextSubTitle}>
+									{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
+									data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length?
+									'Улице у којима се налазе радови:':
+									'Тренутно нема радова у вашем'+'\n'+' насељу.'}
+								</Text>
+								{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
+								 data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.map(item => {
 									return (
-										<Text style={{ color: '#d9d9d9',fontSize:20 }}>	▫️ {item.trim()}</Text>
-									)
-								})}
-
+										<Text style={{ color: '#d9d9d9',fontSize:15 }}>
+											▫️{item.trim()}
+										</Text>
+									)})}
 							</View>
-
 						</Text>
 					</View>
 
@@ -140,19 +150,22 @@ const Kvarovi = (props) => {
 								setIndex={setIndex}
 								index={index}
 								selectedIndex={selectedIndex}
-								isAlone={data.length == 1 ? true : false} />
+								isAlone={data.length == 1 ? true : false}/>
 						)
 					})
 					}
-
 				</View>
 
-
 				{/* View holding the cards displaying the streets */}
-				<LinearGradient colors={['#fcfcfc', '#aaaaaa']} style={[styles.cardHolder]}
-					start={{ x: 0, y: 0 }} locations={[0.7, 1]}>
+				<LinearGradient 
+				colors={['#fcfcfc', '#aaaaaa']} 
+				style={[styles.cardHolder]}
+				start={{ x: 0, y: 0 }} 
+				locations={[0.7, 1]}>
 
-					<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never' >
+					<ScrollView 
+					showsVerticalScrollIndicator={false} 
+					overScrollMode='never'>
 						{data.at && data.at(selectedIndex).streets.map(neighbourhoodInfo => {
 							return (
 								<ScrollView
@@ -160,15 +173,16 @@ const Kvarovi = (props) => {
 									showsVerticalScrollIndicator={false}
 									overScrollMode='never'>
 									<CollapsibleCard neighbourhood={neighbourhoodInfo.neighbourhood}>
-										{neighbourhoodInfo.streetList.map(street => {
-											return (
-												<StreetCard
-													style={neighbourhoodInfo.streetList.indexOf(street) == (neighbourhoodInfo.streetList.length - 1)
-														? styles.expandableCardLast
-														: styles.expandableCard}
-													street={street} />
-											)
-										})
+										{neighbourhoodInfo.streetList.map(street => 
+											{
+												return (
+													<StreetCard
+														style={neighbourhoodInfo.streetList.indexOf(street) == (neighbourhoodInfo.streetList.length - 1)
+															? styles.expandableCardLast
+															: styles.expandableCard}
+														street={street} />
+												)
+											})
 										}
 									</CollapsibleCard>
 								</ScrollView>)
@@ -184,28 +198,23 @@ const Kvarovi = (props) => {
 
 
 
-
 function Main() {
 
 	const [selectedIndex, setIndex] = useState(0);
 	const [check, setCheck] = useState(false);
 	NavigationBar.setBackgroundColorAsync("#8fc3e3");
 
-
-
 	return (
 		<SideMenu isOpen={check} menu={<SideBar setIndex={setIndex} />} animationFunction={(prop, value) =>
 			Animated.spring(prop, {
 				toValue: value,
 				friction: 17,
-				useNativeDriver: true,
-			})}>
+				useNativeDriver: true})}>
+
 			<TouchableOpacity
 				onPress={() => { setCheck(false) }}
 				activeOpacity={1}>
-				{
-					{
-						0: <Kvarovi setDrawerCheck={setCheck} />,
+				{	{	0: <Kvarovi setDrawerCheck={setCheck} />,
 						1: <Radovi setDrawerCheck={setCheck} />,
 						2: <Settings setDrawerCheck={setCheck} />
 					}[selectedIndex]}
@@ -223,6 +232,7 @@ export default function App() {
 			<Stack.Navigator screenOptions={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}>
 				<Stack.Screen name="Main" component={Main} />
 				<Stack.Screen name="Settings" component={Settings} />
+				<Stack.Screen name="About" component={About} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	)
@@ -235,8 +245,8 @@ const styles = StyleSheet.create({
 
 	},
 	gradient: {
-		height: 1080,
-		marginBottom: 0,
+		height:windowHeight+150,
+		width:windowWidth
 	},
 
 	buttonContainer: {
@@ -247,7 +257,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		marginLeft: 10,
 		marginRight: 10,
-
+		
 	},
 	expandableCardLast: {
 		backgroundColor: '#787777',
@@ -278,13 +288,12 @@ const styles = StyleSheet.create({
 	cardHolder: {
 		backgroundColor: '#f0e9e9',
 		height: 350,
-		marginTop: 20,
+		marginTop: 25,
 		borderRadius: 20,
 		width: 320,
 		alignSelf: 'center',
 		borderWidth: 1,
 		borderColor: 'gray',
-		elevation: 5,
 		marginBottom: 35
 	},
 	topTabIcons: {
@@ -304,17 +313,17 @@ const styles = StyleSheet.create({
 		elevation: 50,
 		shadowOpacity: '20%',
 		alignContent: 'center',
-		paddingLeft: 15,
-		paddingRight: 15,
-		paddingTop: 0,
+		padding:20,
+		paddingRight:15,
+		paddingTop:10,
 		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,
-			height: 10,
+			height: 100,
 		},
 		shadowOpacity: 0.51,
 		shadowRadius: 0.16,
-		flexDirection: 'column'
+		flexDirection: 'column',
 	},
 	chosenTextSubTitle: {
 		color: '#d9d9d9',
@@ -325,8 +334,10 @@ const styles = StyleSheet.create({
 
 	chosenTextTitle: {
 		color: '#d9d9d9',
-		fontSize: 35,
-		fontFamily: 'monospace',
-		alignSelf: 'flex-start'
+		fontSize: 40,
+		fontFamily: 'sans-serif-light',
+
+
+		
 	}
 });

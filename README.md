@@ -25,9 +25,9 @@ I developed using [Express.js](https://github.com/expressjs/express).
 - [x] Let the user set their neighbourhood so information about outages in that area appear in the card
 - [x] Add a settings page
 - [x] Add the second page 
-- [ ] Remake the long press modal on street names
+- [x] Remake the long press modal on street names
+- [x] Add an about page
 - [ ] Add info about electrical outages
 - [ ] Enable http requests
-- [ ] Add an about page
 - [ ] Translate hardcoded strings and make an English version
-- [ ] Enable the user to pick background colors for the gradient
+

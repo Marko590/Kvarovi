@@ -1,43 +1,28 @@
 import { StatusBar } from 'expo-status-bar';
-import { Animated, Image, StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
+import { Dimensions, Animated, Image, StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import {
-	createStackNavigator, TransitionPresets, CardStyleInterpolators,
-	createStackNavigato
-} from '@react-navigation/stack';
+
 import 'react-native-gesture-handler';
 import React, { useState, useEffect } from "react";
 import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
-import StreetCard from './StreetCard';
-import CollapsibleCard from './CollapsibleCard';
-import SideMenu from 'react-native-side-menu';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import TimeButton from './TimeButton';
 import Background from './Background';
-import SideBar, { SideBarEntry } from './SideBar';
-import AreaPicker from './AreaPicker';
-import Settings from './Settings';
 import RenderHTML from 'react-native-render-html';
-import WebView from 'react-native-webview';
 import WorkCard from './WorkCard';
+import TopTab from './TopTab';
 
 
-function TabIcon(props) {
-	return (
-		<TouchableOpacity
-			onPress={() => { props.onPress() }}>
-			<Image
-				style={[styles.topTabIcons,props.style]}
-				source={props.src} />
-		</TouchableOpacity>
-	)
-}
 
 
 export default function Radovi(props) {
-	
+
+	const navigation = useNavigation();
+
+	const moveToScreen = (screen) => {
+		navigation.navigate(screen);
+	  }
+
 	const [check, setCheck] = useState(false);
 	const [data, setData] = useState({});
 	const [html, setHtml] = useState([]);
@@ -58,52 +43,43 @@ export default function Radovi(props) {
 			});
 	};
 	useEffect(() => {
-
 		getData();
 	}, []);
+
+	const nightColors=['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']
+	const dayColors=['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']
 	return (
-		<Background style={{ elevation: 10, justifyContent: 'center'}}>
-			<LinearGradient colors={['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']}
-				style={styles.gradient}
-				start={{ x: 0.75, y: 0.35 }}
-				locations={[0, 0.1, 0.3, 0.45, 0.75]}>
-				<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 35,padding:10,paddingBottom:0 }}>
-					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/hamburger.png')} />
-					<TabIcon onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} src={require('./assets/about.png')} style={{width:35,height:35,marginBottom:0}} />
-				</View>
+		<Background style={styles.gradient}>
+			
+				<TopTab setDrawerCheck={props.setDrawerCheck}/>
+				
 				<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never'>
 
-				<StatusBar style="auto" />
-				{data.map && data.map((item, index) => {
-					return (
-						<View key={index}>
-							<WorkCard neighbourhood={item.title} index={index} selectedIndex={selectedIndex} setIndex={setIndex} setContent={setContent} content={item.content} />
+					<StatusBar style="auto" />
+					{data.map && data.map((item, index) => {
+						return (
+							<View key={index}>
+								<WorkCard neighbourhood={item.title} index={index} selectedIndex={selectedIndex} setIndex={setIndex} setContent={setContent} content={item.content} />
+							</View>)
+						})}
 
-						</View>
-					)
-				}
-				)}
-			
-				<LinearGradient colors={['#ffffff', '#cccccc']} style={[styles.cardHolder]}
-					start={{ x: 0, y: 0 }} locations={[0.5, 1]}>
-					<ScrollView persistentScrollbar overScrollMode='never' >
-						{selectedIndex == -1 ? null : <RenderHTML source={{ html: content }} contentWidth={350} />}
-					</ScrollView>
-				</LinearGradient>
+					<LinearGradient colors={['#ffffff', '#cccccc']} style={[styles.cardHolder]}
+						start={{ x: 0, y: 0 }} locations={[0.5, 1]}>
+
+						<ScrollView persistentScrollbar overScrollMode='never' >
+							{selectedIndex == -1 ? null : <RenderHTML source={{ html: content }} contentWidth={350} />}
+						</ScrollView>
+
+					</LinearGradient>
+
 				</ScrollView>
-				</LinearGradient>
+			
 		</Background>
 	)
 }
 const styles = StyleSheet.create({
-	container: {
-
-
-	},
 	gradient: {
-		height: 830,
-		marginBottom: 0,
-		
+		height:'100%',
 	},
 
 	buttonContainer: {
