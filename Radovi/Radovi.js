@@ -7,10 +7,10 @@ import React, { useState, useEffect } from "react";
 import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
-import Background from './Background';
+import Background from '../General/Background';
 import RenderHTML from 'react-native-render-html';
 import WorkCard from './WorkCard';
-import TopTab from './TopTab';
+import TopTab from '../General/TopTab';
 
 
 

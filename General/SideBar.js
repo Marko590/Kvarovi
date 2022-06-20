@@ -3,7 +3,7 @@ import { TouchableOpacity, Text, StyleSheet, View, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Picker } from "@react-native-picker/picker";
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import AreaPicker from "./AreaPicker";
+import AreaPicker from "../Settings/AreaPicker";
 export default function SideBar(props) {
 
 
@@ -55,7 +55,7 @@ export default function SideBar(props) {
 			</LinearGradient>
 			<TouchableOpacity onPress={() => { moveToScreen("Settings") }}>
 				<Image
-					source={require('./assets/settings.png')}
+					source={require('../assets/settings.png')}
 					style={{ width: 50, height: 50, marginTop: 210, marginLeft: 20 }} />
 			</TouchableOpacity>
 
@@ -93,7 +93,7 @@ export function ChevronRight(props) {
 			start={{ x: 0, y: 0 }} locations={[0, 0.75]}>
 			<Image
 				style={{ width: 25, height: 25 }}
-				source={require('./assets/chevron-right.png')} />
+				source={require('../assets/chevron-right.png')} />
 		</LinearGradient>
 	)
 }

@@ -48,7 +48,7 @@ export default function WorkCard(props){
           <Text style={styles.neighbourhoodText}>
             {props.neighbourhood}
           </Text>
-          <Animated.Image style={[styles.arrowIcon,{transform: [{ rotate: RotateData }]}]} source={require('./assets/expand-more.png')} /> 
+          <Animated.Image style={[styles.arrowIcon,{transform: [{ rotate: RotateData }]}]} source={require('../assets/expand-more.png')} /> 
           {props.selectedIndex==props.index ?
            downAnimation():upAnimation()}
 

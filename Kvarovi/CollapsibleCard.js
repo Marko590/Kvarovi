@@ -43,7 +43,7 @@ export default function CollapsibleCard(props) {
         </Text>
 
 
-        <Animated.Image style={[styles.arrowIcon, { transform: [{ rotate: RotateData }] }]} source={require('./assets/expand-more.png')} />
+        <Animated.Image style={[styles.arrowIcon, { transform: [{ rotate: RotateData }] }]} source={require('../assets/expand-more.png')} />
 
 
       </TouchableOpacity>

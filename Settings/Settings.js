@@ -7,7 +7,7 @@ import React from "react";
 import { ScrollView } from 'react-native-gesture-handler';
 
 import { LinearGradient } from 'expo-linear-gradient';
-import Background from './Background';
+import Background from '../General/Background';
 import AreaPicker from './AreaPicker';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -25,7 +25,7 @@ export default function Settings(props) {
 					<View style={{ flex: 1, paddingLeft: 15, marginTop: 5 }}>
 						<TouchableOpacity onPress={() => { navigation.goBack() }}>
 							<Image
-								source={require('./assets/chevron-left.png')}
+								source={require('../assets/chevron-left.png')}
 								style={{ width: 25, height: 25 }}/>
 						</TouchableOpacity>
 					</View>
@@ -60,7 +60,7 @@ export default function Settings(props) {
 					</View>
 					<View style={{ flex: 1 }}>
 						<Image
-							source={require('./assets/chevron-right.png')}
+							source={require('../assets/chevron-right.png')}
 							style={{ width: 30, height: 30, alignSelf: 'flex-end' }} />
 					</View>
 				</SettingsEntry>
@@ -72,7 +72,7 @@ export default function Settings(props) {
 					</View>
 					<View style={{ flex: 1 }}>
 						<Image
-							source={require('./assets/chevron-right.png')}
+							source={require('../assets/chevron-right.png')}
 							style={{ width: 30, height: 30, alignSelf: 'flex-end' }} />
 					</View>
 				</SettingsEntry>
