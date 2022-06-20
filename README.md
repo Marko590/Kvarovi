@@ -7,7 +7,7 @@ and [electrical](http://www.epsdistribucija.rs/Dan_0_Iskljucenja.htm) malfunctio
 in Belgrade.
 
 The application is able to take the street address that is currently
-experiencing outages and locate it on a map (geolocation), returning it's exact
+experiencing outages and locate it on a map (geocoding), returning it's exact
 coordinates.
 
 The information is recieved from a [REST API](https://github.com/Marko590/KvaroviServer)
