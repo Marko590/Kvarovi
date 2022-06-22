@@ -80,6 +80,7 @@ export default function Radovi(props) {
 const styles = StyleSheet.create({
 	gradient: {
 		height:'100%',
+		backgroundColor:'#465461'
 	},
 
 	buttonContainer: {

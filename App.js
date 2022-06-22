@@ -82,65 +82,69 @@ const Kvarovi = (props) => {
 				{/* View holding the top tab icons */}
 				<TopTab setDrawerCheck={props.setDrawerCheck}  pageName={"Vodovod"+'\n'+'Kvarovi'}/>
 
-				{/* Card displaying info about user's selected neighbourhood */}
+
+
+
 				<LinearGradient
-					colors={nightColors}
-					style={styles.localCard}
-					start={{ x: 0.5, y: 0 }}
-					locations={[0,0.25,0.5,0.75,1]}>
-					<View style={{ flex: 1.5, flexDirection: 'row'}}>
+                colors={nightColors}
+                style={styles.localCard}
+                start={{ x: 0.5, y: 0 }}
+                locations={[0, 0.25, 0.5, 0.75, 1]}>
+                <View style={{ flex: 1.5, flexDirection: 'row' }}>
 
-						<Text
-						style={[styles.chosenTextTitle, { flex: 4,right:'5%' }]}>
-							{chosen}
-						</Text>
 
-						{/* Label showing the number of malfunctions in the selected area*/}
-						<LinearGradient
-							colors={['#B3292B', '#bd3b2c', '#d2602f', '#DF7630']}
-							start={{ x: 0, y: -0.2 }}
-							locations={[0, 0.2, 0.65, 0.85]} 
-							style={{borderRadius:10,height:45,alignSelf:'flex-start',justifyContent:'center',flex:0.85}}>
-								<Button 
-									labelStyle={{fontSize:20,flexDirection:'row',bottom:'10%',right:'10%'}}
-									color='white' 
-									icon="traffic-cone"
-							 		style={{ borderRadius: 30}} 
-									mode="text">
-									<Text style={{fontSize:25}}>
-										{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
+                    <Text
+                        style={[styles.chosenTextTitle, { flex: 3.5, right: '2.5%' }]}>
+                        {chosen}
+                    </Text>
+
+                    {/* Label showing the number of malfunctions in the selected area*/}
+                    <LinearGradient
+                        colors={['#B3292B', '#bd3b2c', '#d2602f', '#DF7630']}
+                        start={{ x: 0, y: -0.2 }}
+                        locations={[0, 0.2, 0.65, 0.85]}
+                        style={{ borderRadius: 10, height: 45, alignSelf: 'flex-start', justifyContent: 'center', flex: 1,marginTop:5 }}>
+                        <Button
+                            labelStyle={{ fontSize: 20, flexDirection: 'row', bottom: '10%', right: '10%' }}
+                            color='white'
+                            icon="traffic-cone"
+                            style={{ borderRadius: 30 }}
+                            mode="text">
+                            <Text style={{ fontSize: 25 }}>
+							{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
 										data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length?
 										data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length:
 										0}
-									</Text>
-								</Button>
-								
-						</LinearGradient>
-						
-					</View>
+                            </Text>
+                        </Button>
 
-					{/* Subtitle containing the streets affected by repairs */}
-					<View style={{ flex: 2, justifyContent: 'flex-start' }}>
-						<Text style={[styles.chosenTextSubTitle]}>			
-							<View style={{ flex: 2 }}>
-								<Text style={styles.chosenTextSubTitle}>
-									{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
+                    </LinearGradient>
+
+                </View>
+
+                {/* Subtitle containing the streets affected by repairs */}
+                <View style={{ flex: 1.8, justifyContent: 'flex-start' }}>
+                    <Text style={[styles.chosenTextSubTitle]}>
+                        <View style={{ flex: 2 }}>
+                            <Text style={styles.chosenTextSubTitle}>
+							{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
 									data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length?
 									'Улице у којима се налазе радови:':
 									'Тренутно нема радова у вашем'+'\n'+' насељу.'}
-								</Text>
-								{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
+                            </Text>
+							{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
 								 data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.map(item => {
 									return (
 										<Text style={{ color: '#d9d9d9',fontSize:15 }}>
 											▫️{item.trim()}
 										</Text>
 									)})}
-							</View>
-						</Text>
-					</View>
+                        </View>
+                    </Text>
+                </View>
 
-				</LinearGradient>
+            </LinearGradient>
+				
 
 				{/* View holding the buttons indicating time*/}
 				<View style={styles.buttonContainer}>
@@ -304,27 +308,28 @@ const styles = StyleSheet.create({
 
 	localCard: {
 		height: '30%',
-		margin: 5,
-		marginTop: 10,
-		marginLeft: 15,
-		marginRight: 15,
-		borderRadius: 20,
-		borderWidth: 1,
-		borderColor: 'gray',
-		elevation: 50,
-		shadowOpacity: '20%',
-		alignContent: 'center',
-		padding:20,
-		paddingRight:15,
-		paddingTop:10,
-		shadowColor: "#000",
-		shadowOffset: {
-			width: 0,
-			height: 100,
-		},
-		shadowOpacity: 0.51,
-		shadowRadius: 0.16,
-		flexDirection: 'column',
+        
+        marginTop: 10,
+        marginLeft: 15,
+        marginRight: 15,
+        marginBottom: 0,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: 'gray',
+        elevation: 50,
+        shadowOpacity: '20%',
+        alignContent: 'center',
+        padding: 20,
+        paddingRight: 15,
+        paddingTop: 5,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 100,
+        },
+        shadowOpacity: 0.51,
+        shadowRadius: 0.16,
+        flexDirection: 'column',
 	},
 	chosenTextSubTitle: {
 		color: '#d9d9d9',

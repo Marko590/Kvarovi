@@ -20,8 +20,10 @@ export default function TopTab(props){
     <View style={styles.tabBar}>
         <TabIcon 
         onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} 
-        src={require('../assets/hamburger.png')} />
-        <Text style={{textAlign:'center',color:'white',fontFamily:'sans-serif-thin'}}>{props.pageName}</Text>
+        src={require('../assets/hamburger.png')}
+        style={{top:2}}
+        />
+        <Text style={{textAlign:'center',fontFamily:'sans-serif-light',marginBottom:2}}>{props.pageName}</Text>
         <TabIcon 
         onPress={() => { moveToScreen('About') }} 
         src={require('../assets/about.png')} 

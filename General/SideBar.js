@@ -53,7 +53,7 @@ export default function SideBar(props) {
 			<TouchableOpacity onPress={() => { moveToScreen("Settings") }}>
 				<Image
 					source={require('../assets/settings.png')}
-					style={{ width: 50, height: 50, marginTop: 210, marginLeft: 20 }} />
+					style={{ width: 50, height: 50, marginTop: 250, marginLeft: 20 }} />
 			</TouchableOpacity>
 
 		</View>

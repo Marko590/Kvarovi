@@ -53,8 +53,9 @@ export default function Radovi(props) {
     useEffect(() => {
         getData();
         readData();
+        setChosenCurrent(chosen)
         setAlerts(0)
-        data.find
+        data.find&& data.find(element => element.neighbourhood == chosen)
             && data.find(element => element.neighbourhood == chosen).interval.map(item => {
                 return (
                     setAlerts(prevState => (prevState + item.streets.length))
@@ -107,7 +108,7 @@ export default function Radovi(props) {
                         colors={['#B3292B', '#bd3b2c', '#d2602f', '#DF7630']}
                         start={{ x: 0, y: -0.2 }}
                         locations={[0, 0.2, 0.65, 0.85]}
-                        style={{ borderRadius: 10, height: 45, alignSelf: 'flex-start', justifyContent: 'center', flex: 1,marginTop:5 }}>
+                        style={{ borderRadius: 10, height: 45, alignSelf: 'flex-start', justifyContent: 'center', flex: 1, marginTop: 5 }}>
                         <Button
                             labelStyle={{ fontSize: 20, flexDirection: 'row', bottom: '10%', right: '10%' }}
                             color='white'
@@ -125,7 +126,7 @@ export default function Radovi(props) {
                 </View>
 
                 {/* Subtitle containing the streets affected by repairs */}
-                <View style={{ flex: 2, justifyContent: 'flex-start' }}>
+                <View style={{ flex: 1.8, justifyContent: 'flex-start' }}>
                     <Text style={[styles.chosenTextSubTitle]}>
                         <View style={{ flex: 2 }}>
                             <Text style={styles.chosenTextSubTitle}>
@@ -144,6 +145,7 @@ export default function Radovi(props) {
                 start={{ x: 0, y: 0 }} locations={[0, 0.1, 0.9, 1]}>
 
                 <Picker
+                
                     selectedValue={chosenCurrent}
                     onValueChange={(itemValue, itemIndex) => {
                         setChosenCurrent(itemValue);
@@ -194,7 +196,16 @@ export default function Radovi(props) {
                             </ScrollView>
                         </LinearGradient>
                     )
-                }) : <View style={{ alignSelf: 'center', backgroundColor: 'red' }}><Text textAlign={'center'}>Nema informacija za ovo naselje</Text></View>}
+                }) : <LinearGradient
+                    colors={nightColors}
+                    style={styles.cardHolder}
+                    start={{ x: 0.5, y: 0 }}
+                    locations={[0, 0.25, 0.5, 0.75, 1]}>
+                    <View>
+                        <Text style={{ color: '#d9d9d9', fontSize: 30, textAlign: 'center', fontFamily: 'sans-serif-light' }}>Нема података за ово насеље.</Text>
+                    </View>
+
+                </LinearGradient>}
             </ScrollView>
 
 
@@ -205,7 +216,7 @@ export default function Radovi(props) {
 const styles = StyleSheet.create({
     gradient: {
         height: '100%',
-
+        
     },
 
     buttonContainer: {
