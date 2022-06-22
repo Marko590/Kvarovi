@@ -13,11 +13,11 @@ coordinates.
 The information is recieved from a [REST API](https://github.com/Marko590/KvaroviServer)
 I developed using [Express.js](https://github.com/expressjs/express).
 
-
-![image](https://user-images.githubusercontent.com/62253006/174435519-9a62bfe7-23bf-4c8c-8660-874bc0accff1.png)
-![image](https://user-images.githubusercontent.com/62253006/174435529-1a728f34-3c7d-46e1-b24d-fe84c5dda3bd.png)
-![image](https://user-images.githubusercontent.com/62253006/174435538-ac557636-9ae2-451c-b203-40023ef2e9b2.png)
-![image](https://user-images.githubusercontent.com/62253006/174435543-9e081cc9-ee2a-4fe2-b535-22cb605e4ffa.png)
+![image](https://user-images.githubusercontent.com/62253006/175090125-57967083-a729-4b95-8ff1-56d258907ceb.png)
+![image](https://user-images.githubusercontent.com/62253006/175090254-bdfcc65f-3a71-4f13-b149-d951d5381833.png)
+![image](https://user-images.githubusercontent.com/62253006/175090333-96a040df-94ea-45ae-a08c-fa2d3ab935d6.png)
+![image](https://user-images.githubusercontent.com/62253006/175090531-e067243c-ba68-4608-877b-e663327745bd.png)
+![image](https://user-images.githubusercontent.com/62253006/175090618-28243ffb-a0d1-412a-8578-03a72c727274.png)
 
 
 
