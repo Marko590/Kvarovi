@@ -1,13 +1,13 @@
 
-import { Text } from 'react-native';
+import { Text ,TouchableOpacity} from 'react-native';
 
 import React, { useState } from "react";
 import { Pressable } from "@react-native-material/core";
-import ModalWrapper from './ModalWrapper';
+import ModalWrapper from '../Kvarovi/ModalWrapper';
 import axios from 'axios';
 
 
-export default function StreetCard(props) {
+export default function ElectricalStreetCard(props) {
 	const [mapCheck, setMapCheck] = useState(false);
 	const [check, setCheck] = useState(false);
 	const [coordinates, setCoordinates] = useState({});
@@ -24,23 +24,20 @@ export default function StreetCard(props) {
 	
 	return (
 
-		<Pressable style={props.style}
-			elevation={5}
-			onLongPress={() => {
-				setCheck(prevCheck => !prevCheck);
-				console.log(props.street)}}>
+		<TouchableOpacity style={props.style} onLongPress={() => {
+			setCheck(prevCheck => !prevCheck);
+			props.electrical?getCoordinates(props.street.split(':').at(0)):getCoordinates(props.street)
+			
+			console.log(props.street);
+		}} 
+>
 			<Text
-				style={{ fontFamily: 'sans-serif-medium', color: 'white' }}
-				onLongPress={() => {
-					setCheck(prevCheck => !prevCheck);
-					props.electrical?getCoordinates(props.street.split(':').at(0)):getCoordinates(props.street)
-					
-					console.log(props.street);
-				}}>
+				style={{ fontFamily: 'sans-serif-medium', color: '#f9f9f9' }}
+				>
 				▫️ {props.street.trim()}
 			</Text>
 			<ModalWrapper street={props.street} check={check} setCheck={setCheck} coordinates={coordinates} setMapCheck={setMapCheck} />
-		</Pressable>
+		</TouchableOpacity>
 
 
 	)

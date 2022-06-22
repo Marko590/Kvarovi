@@ -14,11 +14,15 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function Settings(props) {
 	const navigation = useNavigation();
-
+	const nightColors=['#A293FB', '#ab93da', '#ba92a7', '#c89173', '#D19152']
+	const dayColors=['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']
 	return (
 
 		<View>
-			<Background style={styles.topBar}>
+		<LinearGradient colors={nightColors}
+      style={styles.topBar}
+      start={{ x: 0.75, y: 0.55 }} 
+      locations={[0, 0.3, 0.35, 0.45, 0.55]}>
 
 				<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
 
@@ -40,7 +44,7 @@ export default function Settings(props) {
 
 				</View>
 
-			</Background>
+			</LinearGradient>
 
 			<ScrollView style={{ height: windowHeight, backgroundColor: 'white' }}>
 

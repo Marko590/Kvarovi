@@ -27,6 +27,8 @@ I developed using [Express.js](https://github.com/expressjs/express).
 - [x] Add the second page 
 - [x] Remake the long press modal on street names
 - [x] Add an about page
-- [ ] A̶d̶d̶ i̶n̶f̶o̶ a̶b̶o̶u̶t̶ e̶l̶e̶c̶t̶r̶i̶c̶a̶l̶ o̶u̶t̶a̶g̶e̶s̶  Will be added in a future release
+- [x] Add info about electrical outages
+- [ ] Possibly add a main page for both types of info
+- [ ] Make a service to send notifications using Headless JS
 - [ ] Translate hardcoded strings and make an English version
 

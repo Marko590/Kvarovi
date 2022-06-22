@@ -43,15 +43,12 @@ export default function SideBar(props) {
 				</SideBarHeader>
 
 
-				<SideBarEntry pressEvent={() => { }}>
+				<SideBarEntry pressEvent={() => {props.setIndex(2) }}>
 					<Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Кварови</Text>
 					<ChevronRight />
 				</SideBarEntry>
 
-				<SideBarEntry pressEvent={() => { }}>
-					<Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Радови</Text>
-					<ChevronRight />
-				</SideBarEntry>
+			
 			</LinearGradient>
 			<TouchableOpacity onPress={() => { moveToScreen("Settings") }}>
 				<Image

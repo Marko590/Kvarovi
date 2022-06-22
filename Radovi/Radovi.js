@@ -51,7 +51,7 @@ export default function Radovi(props) {
 	return (
 		<Background style={styles.gradient}>
 			
-				<TopTab setDrawerCheck={props.setDrawerCheck}/>
+				<TopTab setDrawerCheck={props.setDrawerCheck} pageName={"Vodovod"+'\n'+'Radovi'}/>
 				
 				<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never'>
 

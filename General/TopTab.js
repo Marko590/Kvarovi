@@ -21,6 +21,7 @@ export default function TopTab(props){
         <TabIcon 
         onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} 
         src={require('../assets/hamburger.png')} />
+        <Text style={{textAlign:'center',color:'white',fontFamily:'sans-serif-thin'}}>{props.pageName}</Text>
         <TabIcon 
         onPress={() => { moveToScreen('About') }} 
         src={require('../assets/about.png')} 
@@ -51,6 +52,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between', 
         marginTop: 35, 
         padding: 10, 
-        paddingBottom: 0
+        paddingBottom: 0,
+        marginBottom:20
     }
 });

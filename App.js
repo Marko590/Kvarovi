@@ -19,6 +19,7 @@ import Settings from './Settings/Settings';
 import Radovi from './Radovi/Radovi';
 import * as NavigationBar from 'expo-navigation-bar';
 import About from './General/About';
+import Struja from './Struja/Struja';
 import TopTab from './General/TopTab';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -79,7 +80,7 @@ const Kvarovi = (props) => {
 			<Background style={{ justifyContent: 'center' }}>
 
 				{/* View holding the top tab icons */}
-				<TopTab setDrawerCheck={props.setDrawerCheck}/>
+				<TopTab setDrawerCheck={props.setDrawerCheck}  pageName={"Vodovod"+'\n'+'Kvarovi'}/>
 
 				{/* Card displaying info about user's selected neighbourhood */}
 				<LinearGradient
@@ -202,7 +203,7 @@ function Main() {
 
 	const [selectedIndex, setIndex] = useState(0);
 	const [check, setCheck] = useState(false);
-	NavigationBar.setBackgroundColorAsync("#8fc3e3");
+	NavigationBar.setBackgroundColorAsync("#D69C61");
 
 	return (
 		<SideMenu isOpen={check} menu={<SideBar setIndex={setIndex} />} animationFunction={(prop, value) =>
@@ -216,7 +217,7 @@ function Main() {
 				activeOpacity={1}>
 				{	{	0: <Kvarovi setDrawerCheck={setCheck} />,
 						1: <Radovi setDrawerCheck={setCheck} />,
-						2: <Settings setDrawerCheck={setCheck} />
+						2: <Struja setDrawerCheck={setCheck} />
 					}[selectedIndex]}
 			</TouchableOpacity>
 		</SideMenu>
