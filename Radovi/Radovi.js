@@ -27,7 +27,7 @@ export default function Radovi(props) {
 	const [data, setData] = useState({});
 	const [html, setHtml] = useState([]);
 	const [content, setContent] = useState("");
-	const [selectedIndex, setIndex] = useState(-1);
+	const [selectedIndex, setIndex] = useState(0);
 	const getData = () => {
 		axios
 			.get("http://192.168.0.31:8081/vodovod/radovi")
@@ -46,16 +46,16 @@ export default function Radovi(props) {
 		getData();
 	}, []);
 
-	const nightColors=['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']
-	const dayColors=['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']
+	const nightColors = ['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']
+	const dayColors=['#A3AE6F', '#85a090', '#6893b0', '#4a85d1', '#2c77f1']
 	return (
 		<Background style={styles.gradient}>
 			
 				<TopTab setDrawerCheck={props.setDrawerCheck} pageName={"Vodovod"+'\n'+'Radovi'}/>
 				
-				<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never'>
+				<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never' contentContainerStyle={{flexDirection:'column'}}>
 
-					<StatusBar style="auto" />
+					<StatusBar style="light" />
 					{data.map && data.map((item, index) => {
 						return (
 							<View key={index}>
@@ -63,11 +63,13 @@ export default function Radovi(props) {
 							</View>)
 						})}
 
-					<LinearGradient colors={['#ffffff', '#cccccc']} style={[styles.cardHolder]}
-						start={{ x: 0, y: 0 }} locations={[0.5, 1]}>
+					<LinearGradient colors={['#3b506e', '#cccccc']} style={[styles.cardHolder]}
+						start={{ x: 0, y: 0 }} locations={[1, 1]}>
 
-						<ScrollView persistentScrollbar overScrollMode='never' >
-							{selectedIndex == -1 ? null : <RenderHTML source={{ html: content }} contentWidth={350} />}
+						<ScrollView showsVerticalScrollIndicator={false}  overScrollMode='never' >
+							{selectedIndex == -1 ?
+							null :
+							<RenderHTML source={{ html: content }} contentWidth={350} baseStyle={{color:'white'}} />}
 						</ScrollView>
 
 					</LinearGradient>
@@ -121,16 +123,17 @@ const styles = StyleSheet.create({
 	},
 	cardHolder: {
 		backgroundColor: '#f0e9e9',
-		height: 320,
+		height: 400,
 		marginTop: 20,
 		borderRadius: 20,
-		width: 370,
+		width: '90%',
 		alignSelf: 'center',
 		borderWidth: 1,
 		borderColor: 'gray',
 		elevation: 5,
 		marginBottom: 20,
-		padding: 20
+		paddingLeft:15,
+		paddingRight:15,
 	},
 	topTabIcons: {
 		width: 30,

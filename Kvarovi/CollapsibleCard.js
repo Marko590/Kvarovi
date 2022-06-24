@@ -4,6 +4,9 @@ import React, { useState, useEffect } from "react";
 import Collapsible from 'react-native-collapsible';
 export default function CollapsibleCard(props) {
   const [check, setCheck] = useState(true);
+
+
+
   const animation = useState(new Animated.Value(1))[0];
   const downAnimation = () => {
     animation.setValue(1);
@@ -23,16 +26,17 @@ export default function CollapsibleCard(props) {
       easing: Easing.linear,
     }).start();
   }
+  
   const nightColors = ['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']
-  const dayColors = ['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']
+  	const dayColors=['#A3AE6F', '#85a090', '#6893b0', '#4a85d1', '#2c77f1']
 
   const RotateData = animation.interpolate({
     inputRange: [0, 1],
     outputRange: ['180deg', '0deg'],
   });
   return (
-    <LinearGradient colors={nightColors} style={[styles.gradient, { borderRadius: 10, elevation: 5 }]}
-      start={{ x: 0, y: 0 }} locations={[0, 0.25, 0.5, 0.75, 1]}>
+    <LinearGradient colors={['#265db5','#aec251']} style={[styles.gradient, { borderRadius: 10, elevation: 5 }]}
+      start={{ x: 0, y: -0.5 }} locations={[0, 1]}>
       <TouchableOpacity
         onPress={() => { setCheck(prevCheck => !prevCheck); if (check) { downAnimation() } else { upAnimation() } }}
         style={check ? styles.neighbourhoodTitlePressed : styles.neighbourhoodTitle}
@@ -69,7 +73,7 @@ const styles = StyleSheet.create({
   },
 
   neighbourhoodText: {
-    color: 'white',
+    color: '#dbdbdb',
     fontSize: 20,
     fontFamily: 'sans-serif-light',
   },
@@ -77,7 +81,7 @@ const styles = StyleSheet.create({
   neighbourhoodTitle: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#9c9c9c',
+    backgroundColor: '#8c92a1',
     justifyContent: 'space-between',
     borderRadius: 7,
     borderBottomLeftRadius: 0,
@@ -93,7 +97,7 @@ const styles = StyleSheet.create({
   neighbourhoodTitlePressed: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#bdbdbd',
+    backgroundColor: '#8c92a1',
     justifyContent: 'space-between',
     borderRadius: 7,
     paddingLeft: 15,
@@ -105,9 +109,9 @@ const styles = StyleSheet.create({
   },
 
   arrowIcon: {
-    marginTop: 4,
     height: 20,
     width: 20,
+    
   },
 
 

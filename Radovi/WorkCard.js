@@ -35,10 +35,11 @@ export default function WorkCard(props){
     useEffect(() => {
         props.setContent(props.content);
     }, []);
-    
+    const nightColors = ['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']
+  	const dayColors=['#A3AE6F', '#85a090', '#6893b0', '#4a85d1', '#2c77f1']
     return (
-      <LinearGradient colors={['#8A5DB6','#99C5E1']} style={[styles.gradient,{borderRadius:10,elevation:5}]}
-        start={{x:0,y:0}} locations={[0,0.75]}>
+      <LinearGradient colors={dayColors} style={[styles.gradient,{borderRadius:10,elevation:5}]}
+        start={{x:0,y:0}} locations={[0,0.25,0.5,0.75,1]}>
         
         <TouchableOpacity
           onPress={() => { setCheck(prevCheck => !prevCheck); props.setIndex(props.index); props.setContent(props.content) }}
@@ -88,11 +89,10 @@ export default function WorkCard(props){
     neighbourhoodTitle: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#9c9c9c',
+      backgroundColor: '#8c92a1',
       justifyContent: 'space-between',
       borderRadius: 7,
-      borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 0,
+     
       paddingLeft: 15,
       paddingRight: 10,
       paddingBottom: 5,

@@ -34,7 +34,9 @@ export default function AreaPicker(props) {
 			onValueChange={(itemValue, itemIndex) => {
 				setChosen(itemValue);
 				storeData(itemValue)
-			}}>
+			}}
+			
+			>
 			<Picker.Item label="Стари Град" value="Стари град" />
 			<Picker.Item label="Савски Венац" value="Савски венац" />
 			<Picker.Item label="Палилула" value="Палилула" />

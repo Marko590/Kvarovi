@@ -12,7 +12,7 @@ import RenderHTML from 'react-native-render-html';
 import WorkCard from '../Radovi/WorkCard';
 import TopTab from '../General/TopTab';
 
-import { Button } from 'react-native-paper';
+import { ActivityIndicator, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ElectricalStreetCard from './ElectricalStreetCard'
 
@@ -49,26 +49,7 @@ export default function Radovi(props) {
             // error reading value
         }
     }
-
-    useEffect(() => {
-        getData();
-        readData();
-        setChosenCurrent(chosen)
-        setAlerts(0)
-        data.find&& data.find(element => element.neighbourhood == chosen)
-            && data.find(element => element.neighbourhood == chosen).interval.map(item => {
-                return (
-                    setAlerts(prevState => (prevState + item.streets.length))
-                )
-            })
-
-    }, []);
-
-    const nightColors = ['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']
-    const dayColors = ['#b18cff', '#bc8fed', '#d897c0', '#ef9e99', '#FEA280']
-
-
-    /*
+   /*
     :[
         neighbourhood::string,
         interval:
@@ -78,20 +59,61 @@ export default function Radovi(props) {
                 ]
             }    
     ]
-    
-    
+     
     */
-    const array = [1, 2, 3]
 
+
+
+    const [isLoading,setLoading]=useState(true);
+
+
+    //Fetching local and data from rest,sets loading, and calculates
+    useEffect(() => {
+        getData();
+        readData();
+        setLoading(false);
+        setChosenCurrent(chosen)
+        setAlerts(0)
+        data.find&& data.find(element => element.neighbourhood == chosen)
+            && data.find(element => element.neighbourhood == chosen).interval.map(item => {
+                
+                    setAlerts(prevState => (prevState + item.streets.length))
+                
+            })
+
+    }, []);
+    const nightColors=['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']
+	
+	const dayColors=['#3769B9', '#527aa7', '#6d8c94', '#889d82', '#a3ae6f']
+
+
+    //Chosen area for the local card
     const [chosen, setChosen] = useState("");
+
+
+    //Chosen area for the picker component
     const [chosenCurrent, setChosenCurrent] = useState("");
+
+
+    //Scale animation setup
+    const [fadeAnim] = useState(new Animated.Value(0.5));
+    useEffect(() => {
+		Animated.timing(fadeAnim, {
+			useNativeDriver:true,
+		  toValue: 1,
+		  duration: 1500,
+          
+		}).start();
+	  }, []);
+     
+     
     return (
         <Background style={styles.gradient}>
 
             <TopTab setDrawerCheck={props.setDrawerCheck} pageName={"Struja\nPlanirana isklučenja"} />
 
             <LinearGradient
-                colors={nightColors}
+                colors={dayColors}
                 style={styles.localCard}
                 start={{ x: 0.5, y: 0 }}
                 locations={[0, 0.25, 0.5, 0.75, 1]}>
@@ -108,7 +130,7 @@ export default function Radovi(props) {
                         colors={['#B3292B', '#bd3b2c', '#d2602f', '#DF7630']}
                         start={{ x: 0, y: -0.2 }}
                         locations={[0, 0.2, 0.65, 0.85]}
-                        style={{ borderRadius: 10, height: 45, alignSelf: 'flex-start', justifyContent: 'center', flex: 1, marginTop: 5 }}>
+                        style={{ borderRadius: 10, height: 45, alignSelf: 'flex-start', justifyContent: 'center', flex: 1, marginTop: 10 }}>
                         <Button
                             labelStyle={{ fontSize: 20, flexDirection: 'row', bottom: '10%', right: '10%' }}
                             color='white'
@@ -128,30 +150,31 @@ export default function Radovi(props) {
                 {/* Subtitle containing the streets affected by repairs */}
                 <View style={{ flex: 1.8, justifyContent: 'flex-start' }}>
                     <Text style={[styles.chosenTextSubTitle]}>
-                        <View style={{ flex: 2 }}>
+                        {!isLoading?
+                        <Animated.View style={{ flex: 2,transform: [{ scale:fadeAnim }] }}>
                             <Text style={styles.chosenTextSubTitle}>
 
                                 Улице у којима се налазе радови:
 
                             </Text>
 
-                        </View>
+                        </Animated.View>:<ActivityIndicator size={150}/>}
                     </Text>
                 </View>
 
             </LinearGradient>
 
-            <LinearGradient colors={['#a8a8a8', '#ffffff', '#ffffff', '#a8a8a8']} style={{ elevation: 20, width: '50%', alignSelf: 'center', backgroundColor: '#fafafa', borderRadius: 10, marginBottom: 30 }}
+            <LinearGradient colors={['#a8a8a8', 'transparent', 'transparent', '#a8a8a8']} style={{ elevation: 20, width: '50%', alignSelf: 'center', backgroundColor: '#fafafa', borderRadius: 10, marginBottom: 30 }}
                 start={{ x: 0, y: 0 }} locations={[0, 0.1, 0.9, 1]}>
-
+               
                 <Picker
-                
                     selectedValue={chosenCurrent}
                     onValueChange={(itemValue, itemIndex) => {
                         setChosenCurrent(itemValue);
+                        
+                        
+                        }}>
 
-                    }}
-                >
                     <Picker.Item label="Стари Град" value="Стари град" />
                     <Picker.Item label="Савски Венац" value="Савски венац" />
                     <Picker.Item label="Палилула" value="Палилула" />
@@ -171,9 +194,9 @@ export default function Radovi(props) {
 
                 {data.find && data.find(element => element.neighbourhood == chosenCurrent) ? data.find(element => element.neighbourhood == chosenCurrent).interval.map(item => {
                     return (
-
+                        <Animated.View style={{opacity:fadeAnim}}>
                         <LinearGradient
-                            colors={nightColors}
+                            colors={dayColors}
                             style={styles.cardHolder}
                             start={{ x: 0.5, y: 0 }}
                             locations={[0, 0.25, 0.5, 0.75, 1]}>
@@ -195,9 +218,12 @@ export default function Radovi(props) {
                                 })}
                             </ScrollView>
                         </LinearGradient>
+                        </Animated.View>
                     )
-                }) : <LinearGradient
-                    colors={nightColors}
+                }) : 
+                <Animated.View style={{opacity:fadeAnim}}>
+                <LinearGradient
+                    colors={dayColors}
                     style={styles.cardHolder}
                     start={{ x: 0.5, y: 0 }}
                     locations={[0, 0.25, 0.5, 0.75, 1]}>
@@ -205,7 +231,8 @@ export default function Radovi(props) {
                         <Text style={{ color: '#d9d9d9', fontSize: 30, textAlign: 'center', fontFamily: 'sans-serif-light' }}>Нема података за ово насеље.</Text>
                     </View>
 
-                </LinearGradient>}
+                </LinearGradient>
+                </Animated.View>}
             </ScrollView>
 
 

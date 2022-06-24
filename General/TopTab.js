@@ -22,8 +22,9 @@ export default function TopTab(props){
         onPress={() => { props.setDrawerCheck(prevCheck => !prevCheck) }} 
         src={require('../assets/hamburger.png')}
         style={{top:2}}
+        
         />
-        <Text style={{textAlign:'center',fontFamily:'sans-serif-light',marginBottom:2}}>{props.pageName}</Text>
+        <Text style={{color:'#cfcfcf',textAlign:'center',fontFamily:'sans-serif-light',marginBottom:2}}>{props.pageName}</Text>
         <TabIcon 
         onPress={() => { moveToScreen('About') }} 
         src={require('../assets/about.png')} 
@@ -38,6 +39,7 @@ function TabIcon(props) {
 		<TouchableOpacity
 			onPress={() => { props.onPress() }}>
 			<Image
+            tintColor="#cfcfcf"
 				style={[styles.topTabIcons, props.style]}
 				source={props.src} />
 		</TouchableOpacity>

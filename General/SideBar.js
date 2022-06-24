@@ -12,11 +12,11 @@ export default function SideBar(props) {
 	const moveToScreen = (screen) => {
 		navigation.navigate(screen);
 	}
-
+	const dayColors=['#3769B9', '#527aa7', '#6d8c94', '#889d82', '#a3ae6f']
 	return (
 		<View>
-			<LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 10, paddingTop: 100 }}
-				start={{ x: 0, y: 0 }} locations={[0.82, 1]}>
+			<LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 15,paddingTop:200  }}
+				start={{ x: 0, y: -0.6 }} locations={[0.82, 1]}>
 
 				<SideBarHeader>
 					<Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>Водовод</Text>
@@ -35,27 +35,28 @@ export default function SideBar(props) {
 
 			</LinearGradient>
 
-			<LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 10 }}
-				start={{ x: 0, y: 0 }} locations={[0.82, 1]}>
+			<LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 15 }}
+				start={{ x: 0, y: -0.6 }} locations={[0.82, 1]}>
 
 				<SideBarHeader>
 					<Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>Струја</Text>
 				</SideBarHeader>
 
 
-				<SideBarEntry pressEvent={() => {props.setIndex(2) }}>
+				<SideBarEntry pressEvent={() => { props.setIndex(2) }}>
 					<Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Кварови</Text>
 					<ChevronRight />
 				</SideBarEntry>
 
-			
-			</LinearGradient>
-			<TouchableOpacity onPress={() => { moveToScreen("Settings") }}>
-				<Image
-					source={require('../assets/settings.png')}
-					style={{ width: 50, height: 50, marginTop: 250, marginLeft: 20 }} />
-			</TouchableOpacity>
 
+			</LinearGradient>
+			<View>
+				<TouchableOpacity style={{ flex: 1 }} onPress={() => { moveToScreen("Settings") }}>
+					<Image
+						source={require('../assets/settings.png')}
+						style={{ width: 50, height: 50, marginTop: 120, marginLeft: 20 }} />
+				</TouchableOpacity>
+			</View>
 		</View>
 	)
 }
@@ -75,7 +76,7 @@ export function SideBarEntry(props) {
 export function SideBarHeader(props) {
 
 	return (
-		<View style={{ paddingTop: 50 }}>
+		<View style={{ paddingTop: 50,marginTop:20}}>
 			<View style={{ alignItems: 'center', paddingLeft: 20, height: 60, flexDirection: 'row', justifyContent: 'space-between' }}>
 				{props.children}
 			</View>
@@ -86,7 +87,7 @@ export function SideBarHeader(props) {
 export function ChevronRight(props) {
 
 	return (
-		<LinearGradient colors={['#8A5DB6', '#99C5E1']} style={{ marginRight: 20, borderRadius: 20 }}
+		<LinearGradient colors={['#265db5', '#a0b053']} style={{ marginRight: 20, borderRadius: 20 }}
 			start={{ x: 0, y: 0 }} locations={[0, 0.75]}>
 			<Image
 				style={{ width: 25, height: 25 }}
