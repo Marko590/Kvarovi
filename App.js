@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import {Dimensions, Animated, Image, StyleSheet, Text, View, TouchableOpacity,ActivityIndicator } from 'react-native';
+import { Dimensions, Animated, Image, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import {createStackNavigator, CardStyleInterpolators} from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 import { Button } from 'react-native-paper';
 import React, { useState, useEffect } from "react";
@@ -40,19 +40,20 @@ const Kvarovi = (props) => {
 
 	const [chosen, setChosen] = useState("");
 	const [selectedIndex, setIndex] = useState(0);
-	const [data, setData] = useState({});
-	const [isLoading,setLoading]=useState(true);
+	const [data, setData] = useState([]);
+	const [isLoading, setLoading] = useState(true);
 	const navigation = useNavigation();
-  
-    const moveToScreen = (screen) => {
-      navigation.navigate(screen);
-    }
+
+	const moveToScreen = (screen) => {
+		navigation.navigate(screen);
+	}
+	
 	const getData = () => {
 		axios
-			.get("http://192.168.0.31:8081/vodovod/kvarovi")
+			.get("http://192.168.0.31:8082/vodovod/kvarovi")
 			.then((response) => {
 				console.log(response.data);
-				setData(response.data.allData);
+				setData(response.data);
 				setLoading(false);
 			});
 	};
@@ -68,151 +69,175 @@ const Kvarovi = (props) => {
 			// error reading value
 		}
 	}
-	
+
 	useEffect(() => {
 		getData();
 		readData();
+		let alert = 0;
+		data.map && data.map(item => {
+			item.streets.map(neighbourhoodInfo => {
+				if (neighbourhoodInfo.neighbourhood == chosen) {
+					alert += neighbourhoodInfo.streetList.length
+				}
+			})
+		})
+		console.log(alert)
+		setAlerts(alert)
 	}, []);
 	useEffect(() => {
+
 		Animated.timing(fadeAnim, {
 
-			useNativeDriver:false,
-		  toValue: 1,
-		  duration: 1500,
+			useNativeDriver: false,
+			toValue: 1,
+			duration: 1500,
 		}).start();
-	  }, []);
-	const nightColors=['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']
+	}, []);
+	const nightColors = ['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']
 	const [fadeAnim] = useState(new Animated.Value(0.5));
-	const dayColors=['#3769B9', '#527aa7', '#6d8c94', '#889d82', '#a3ae6f']
-
+	const dayColors = ['#3769B9', '#527aa7', '#6d8c94', '#889d82', '#a3ae6f']
+	const [alerts, setAlerts] = useState(0);
 	
+	
+
+
 	return (
 		<View>
 			<Background style={{ justifyContent: 'center' }}>
 
 				{/* View holding the top tab icons */}
-				<TopTab setDrawerCheck={props.setDrawerCheck}  pageName={"Vodovod"+'\n'+'Kvarovi'}/>
+				<TopTab setDrawerCheck={props.setDrawerCheck} pageName={"Vodovod" + '\n' + 'Kvarovi'} />
 
 
 
-				
+
 				<LinearGradient
-                colors={dayColors}
-                style={styles.localCard}
-                start={{ x: 0.5, y: 0 }}
-                locations={[0, 0.25, 0.5, 0.75, 1]}>
-                <View style={{ flex: 1.5, flexDirection: 'row' }}>
+					colors={dayColors}
+					style={styles.localCard}
+					start={{ x: 0.5, y: 0 }}
+					locations={[0, 0.25, 0.5, 0.75, 1]}>
+					<View style={{ flex: 1.5, flexDirection: 'row' }}>
 
 
-                    <Text
-                        style={[styles.chosenTextTitle, { flex: 3.5, right: '2.5%' }]}>
-                        {chosen}
-                    </Text>
+						<Text
+							style={[styles.chosenTextTitle, { flex: 3.5, right: '2.5%' }]}>
+							{chosen}
+						</Text>
 
-                    {/* Label showing the number of malfunctions in the selected area*/}
-                    <LinearGradient
-                        colors={['#B3292B', '#bd3b2c', '#d2602f', '#DF7630']}
-                        start={{ x: 0, y: -0.2 }}
-                        locations={[0, 0.2, 0.65, 0.85]}
-                        style={{ borderRadius: 10, height: 45, alignSelf: 'flex-start', justifyContent: 'center', flex: 1,marginTop:10 }}>
-							<Animated.View style={{opacity:fadeAnim}}>
-							{!isLoading?
-                        <Button
-                            labelStyle={{ fontSize: 20, flexDirection: 'row', bottom: '10%', right: '10%' }}
-                            color='white'
-                            icon="traffic-cone"
-                            style={{ borderRadius: 30 }}
-                            mode="text">
-								
-                            <Text style={{ fontSize: 25 }}>
-							{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
-										data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length?
-										data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length:
-										0}
-                            </Text>
-                        </Button>:<ActivityIndicator size='large' color={'blue'}/>}
-						</Animated.View>
-							
-                    </LinearGradient>
+						{/* Label showing the number of malfunctions in the selected area*/}
+						<LinearGradient
+							colors={['#B3292B', '#bd3b2c', '#d2602f', '#DF7630']}
+							start={{ x: 0, y: -0.2 }}
+							locations={[0, 0.2, 0.65, 0.85]}
+							style={{ borderRadius: 10, height: 45, alignSelf: 'flex-start', justifyContent: 'center', flex: 1, marginTop: 10 }}>
+							<Animated.View style={{ opacity: fadeAnim }}>
+								{!isLoading ?
+									<Button
+										labelStyle={{ fontSize: 20, flexDirection: 'row', bottom: '10%', right: '10%' }}
+										color='white'
+										icon="traffic-cone"
+										style={{ borderRadius: 30 }}
+										mode="text">
 
-                </View>
-
-                {/* Subtitle containing the streets affected by repairs */}
-                <View style={{ flex: 1.8, justifyContent: 'flex-start',alignItems:'center' }}>
-                    <Text style={[styles.chosenTextSubTitle]}>
-						{!isLoading?
-                        <Animated.View style={{ flex: 2 ,transform: [{ scale:fadeAnim }]}}>
-                            <Text style={styles.chosenTextSubTitle}>
-							{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
-									data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.length?
-									'Улице у којима се налазе радови:':
-									'Тренутно нема радова у вашем'+'\n'+' насељу.'}
-                            </Text>
-							{data.at && data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen) &&
-								 data.at(selectedIndex).streets.find(element => element.neighbourhood == chosen).streetList.map(item => {
-									return (
-										<Text style={{ color: '#d9d9d9',fontSize:15 }}>
-											▫️{item.trim()}
+										<Text style={{ fontSize: 25 }}>
+											{alerts}
 										</Text>
-									)})}
-                        </Animated.View>:<ActivityIndicator style={{alignSelf:'center'}} size={75}/>}
-                    </Text>
-                </View>
+									</Button> : <ActivityIndicator size='large' color={'blue'} />}
+							</Animated.View>
 
-            </LinearGradient>
-				
+						</LinearGradient>
 
-				{/* View holding the buttons indicating time*/}
-				<View style={styles.buttonContainer}>
-					{data.map && data.map((a, index) => {
-						return (
-							<TimeButton
-								time={a.time}
-								setIndex={setIndex}
-								index={index}
-								selectedIndex={selectedIndex}
-								isAlone={data.length == 1 ? true : false}/>
-						)
-					})
-					}
-				</View>
+					</View>
+
+					{/* Subtitle containing the streets affected by repairs */}
+					<View style={{ flex: 1.8, justifyContent: 'flex-start', alignItems: 'center' }}>
+						<Text style={[styles.chosenTextSubTitle]}>
+							{!isLoading ?
+								<Animated.View style={{ flex: 2, transform: [{ scale: fadeAnim }] }}>
+									<Text style={styles.chosenTextSubTitle}>
+										{data.find(element=>element).streets.find(item=>item.neighbourhood==chosen)
+										&&data.find(element=>element).streets.find(item=>item.neighbourhood==chosen).streetList.length?'Улице у којима се налазе радови:':
+										'Тренутно нема радова у вашем'+'\n'+' насељу.'}
+									</Text>
+									{data.map(item=>{
+										return(
+										item.streets.map(neighbourhoodInfo=>{
+											return(
+											neighbourhoodInfo.neighbourhood===chosen?
+											neighbourhoodInfo.streetList.map(street=>{
+												return(
+													<Text style={{color:'#dbdbdb',fontSize:15}}>{street}</Text>
+												)
+												
+											}):null
+											)
+											})
+										)
+										})
+									
+									}
+								</Animated.View> : <ActivityIndicator style={{ alignSelf: 'center' }} size={75} />}
+						</Text>
+					</View>
+
+				</LinearGradient>
+
+
+
+
 
 				{/* View holding the cards displaying the streets */}
-				
-				<Animated.View style={{opacity:fadeAnim}}>
-				<LinearGradient 
-				colors={['#3b506e', '#aaaaaa']} 
-				style={[styles.cardHolder]}
-				start={{ x: 0, y: 0 }} 
-				locations={[1, 1]}>
-					{!isLoading?
-					<ScrollView 
-					showsVerticalScrollIndicator={false} 
-					overScrollMode='never'>
-						{data.at && data.at(selectedIndex).streets.map(neighbourhoodInfo => {
+				{!isLoading ?
+					<ScrollView horizontal showsHorizontalScrollIndicator={false} overScrollMode='never' contentContainerStyle={{ padding: 35, paddingLeft: 40, paddingTop: 0, justifyContent: 'center', alignItems: 'center' }}>
+						{data.map && data.map(a => {
 							return (
-								<ScrollView
-									contentContainerStyle={{ padding: 15 }}
-									showsVerticalScrollIndicator={false}
-									overScrollMode='never'>
-									<CollapsibleCard neighbourhood={neighbourhoodInfo.neighbourhood}>
-										{neighbourhoodInfo.streetList.map(street => 
-											{
+								<Animated.View style={{ opacity: fadeAnim }}>
+									<LinearGradient
+										colors={['#3b506e', '#aaaaaa']}
+										style={[styles.cardHolder]}
+										start={{ x: 0, y: 0 }}
+										locations={[1, 1]}>
+										<View style={{ borderBottomWidth: 0.5, borderRadius: 15, borderColor: '#d9d9d9', padding: 15 }}>
+											<Text style={{ color: '#d9d9d9', fontSize: 30, textAlign: 'center', fontFamily: 'sans-serif-medium' }}>{a.time}</Text>
+										</View>
+										<ScrollView
+											style={{ flex: 2 }}
+											contentContainerStyle={{ padding: 20 }}
+											showsVerticalScrollIndicator={false}
+											overScrollMode='never'>
+
+											{a.streets.map(b => {
 												return (
-													<StreetCard
-														style={neighbourhoodInfo.streetList.indexOf(street) == (neighbourhoodInfo.streetList.length - 1)
-															? styles.expandableCardLast
-															: styles.expandableCard}
-														street={street} />
+													<CollapsibleCard neighbourhood={b.neighbourhood}>
+														{b.streetList.map(street => {
+															return (
+																<StreetCard
+																	style={b.streetList.indexOf(street) == (b.streetList.length - 1)
+																		? styles.expandableCardLast
+																		: styles.expandableCard}
+																	street={street} />
+															)
+														})}
+													</CollapsibleCard>
 												)
-											})
-										}
-									</CollapsibleCard>
-								</ScrollView>)
+											})}
+										</ScrollView>
+
+									</LinearGradient>
+								</Animated.View>
+							)
 						})}
-					</ScrollView>:<ActivityIndicator style={{alignSelf:'center'}} size={75}/>}
-				</LinearGradient>
-				</Animated.View>
+
+					</ScrollView> : <Animated.View style={{ opacity: fadeAnim }}>
+						<LinearGradient
+							colors={['#3b506e', '#aaaaaa']}
+							style={[styles.cardHolder]}
+							start={{ x: 0, y: 0 }}
+							locations={[1, 1]}>
+
+							<ActivityIndicator size={150} />
+						</LinearGradient></Animated.View>
+				}
 				<StatusBar style="auto" />
 
 			</Background>
@@ -233,15 +258,17 @@ function Main() {
 			Animated.spring(prop, {
 				toValue: value,
 				friction: 17,
-				useNativeDriver: true})}>
+				useNativeDriver: true
+			})}>
 
 			<TouchableOpacity
 				onPress={() => { setCheck(false) }}
 				activeOpacity={1}>
-				{	{	0: <Kvarovi setDrawerCheck={setCheck} />,
-						1: <Radovi setDrawerCheck={setCheck} />,
-						2: <Struja setDrawerCheck={setCheck} />
-					}[selectedIndex]}
+				{{
+					0: <Kvarovi setDrawerCheck={setCheck} />,
+					1: <Radovi setDrawerCheck={setCheck} />,
+					2: <Struja setDrawerCheck={setCheck} />
+				}[selectedIndex]}
 			</TouchableOpacity>
 		</SideMenu>
 	)
@@ -269,9 +296,9 @@ const styles = StyleSheet.create({
 
 	},
 	gradient: {
-		height:windowHeight+150,
-		width:windowWidth,
-		backgroundColor:'#2d2d44'
+		height: windowHeight + 340,
+		width: windowWidth,
+		backgroundColor: '#2d2d44'
 	},
 
 	buttonContainer: {
@@ -282,7 +309,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		marginLeft: 10,
 		marginRight: 10,
-		
+
 	},
 	expandableCardLast: {
 		backgroundColor: '#787777',
@@ -312,15 +339,15 @@ const styles = StyleSheet.create({
 	},
 	cardHolder: {
 		backgroundColor: '#f0e9e9',
-		justifyContent:'center',
-		height: 350,
+		justifyContent: 'center',
+		height: 375,
 		marginTop: 25,
 		borderRadius: 20,
 		width: 320,
 		alignSelf: 'center',
 		borderWidth: 1,
 		borderColor: 'gray',
-		marginBottom: 35
+		marginBottom: 35,
 	},
 	topTabIcons: {
 		width: 30,
@@ -328,35 +355,35 @@ const styles = StyleSheet.create({
 	},
 
 	localCard: {
-		height: '30%',
-        
-        marginTop: 10,
-        marginLeft: 15,
-        marginRight: 15,
-        marginBottom: 0,
-        borderRadius: 20,
-        borderWidth: 1,
-        borderColor: 'gray',
-        elevation: 50,
-        shadowOpacity: '20%',
-        alignContent: 'center',
-        padding: 20,
-        paddingRight: 15,
-        paddingTop: 5,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 100,
-        },
-        shadowOpacity: 0.51,
-        shadowRadius: 0.16,
-        flexDirection: 'column',
+		height: 250,
+
+		marginTop: 10,
+		marginLeft: 15,
+		marginRight: 15,
+		marginBottom: 20,
+		borderRadius: 20,
+		borderWidth: 1,
+		borderColor: 'gray',
+		elevation: 50,
+		shadowOpacity: '20%',
+		alignContent: 'center',
+		padding: 20,
+		paddingRight: 15,
+		paddingTop: 5,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 100,
+		},
+		shadowOpacity: 0.51,
+		shadowRadius: 0.16,
+		flexDirection: 'column',
 	},
 	chosenTextSubTitle: {
 		color: '#d1d1d1',
 		fontSize: 20,
-		marginBottom:10,
-		marginRight:10,
+		marginBottom: 10,
+		marginRight: 10,
 		fontFamily: 'sans-serif-light'
 	},
 
@@ -364,9 +391,9 @@ const styles = StyleSheet.create({
 		color: '#d1d1d1',
 		fontSize: 40,
 		fontFamily: 'sans-serif-light',
-		marginTop:10,
-		marginLeft:5
+		marginTop: 10,
+		marginLeft: 5
 
-		
+
 	}
 });

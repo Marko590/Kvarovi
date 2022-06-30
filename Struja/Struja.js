@@ -28,7 +28,7 @@ export default function Radovi(props) {
     const [data, setData] = useState({});
     const getData = () => {
         axios
-            .get("http://192.168.0.31:8081/struja/radovi")
+            .get("http://192.168.0.31:8082/struja/radovi")
             .then((response) => {
                 console.log(response.data);
                 const array = [];
@@ -164,7 +164,7 @@ export default function Radovi(props) {
 
             </LinearGradient>
 
-            <LinearGradient colors={['#a8a8a8', 'transparent', 'transparent', '#a8a8a8']} style={{ elevation: 20, width: '50%', alignSelf: 'center', backgroundColor: '#fafafa', borderRadius: 10, marginBottom: 30 }}
+            <LinearGradient colors={['#a8a8a8', 'transparent', 'transparent', '#a8a8a8']} style={{ elevation: 20, width: '50%', alignSelf: 'center', backgroundColor: '#fafafa', borderRadius: 10, marginBottom: 10 }}
                 start={{ x: 0, y: 0 }} locations={[0, 0.1, 0.9, 1]}>
                
                 <Picker
@@ -190,7 +190,7 @@ export default function Radovi(props) {
                 </Picker>
             </LinearGradient>
             <StatusBar style="auto" />
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} overScrollMode='never' contentContainerStyle={{ padding: 35, justifyContent: 'center', alignItems: 'center' }}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} overScrollMode='never' contentContainerStyle={{ padding: 35,paddingTop:50, justifyContent: 'center', alignItems: 'center' }}>
 
                 {data.find && data.find(element => element.neighbourhood == chosenCurrent) ? data.find(element => element.neighbourhood == chosenCurrent).interval.map(item => {
                     return (
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
 
     localCard: {
         height: '30%',
-        margin: 5,
+        margin: 11,
         marginTop: 10,
         marginLeft: 15,
         marginRight: 15,

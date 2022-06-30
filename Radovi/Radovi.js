@@ -30,7 +30,7 @@ export default function Radovi(props) {
 	const [selectedIndex, setIndex] = useState(0);
 	const getData = () => {
 		axios
-			.get("http://192.168.0.31:8081/vodovod/radovi")
+			.get("http://192.168.0.31:8082/vodovod/radovi")
 			.then((response) => {
 				console.log(response.data);
 				const array = [];

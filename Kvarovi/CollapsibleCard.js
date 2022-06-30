@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     marginRight: 15,
     marginLeft: 15,
-    marginBottom: 0,
+    marginBottom: 30,
   },
 
   neighbourhoodText: {
