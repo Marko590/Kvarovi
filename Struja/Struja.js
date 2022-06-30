@@ -49,18 +49,7 @@ export default function Radovi(props) {
             // error reading value
         }
     }
-   /*
-    :[
-        neighbourhood::string,
-        interval:
-                [
-                    time:string,
-                    streets:[] 
-                ]
-            }    
-    ]
-     
-    */
+  
 
 
 
@@ -74,11 +63,10 @@ export default function Radovi(props) {
         setLoading(false);
         setChosenCurrent(chosen)
         setAlerts(0)
-        data.find&& data.find(element => element.neighbourhood == chosen)
-            && data.find(element => element.neighbourhood == chosen).interval.map(item => {
-                
-                    setAlerts(prevState => (prevState + item.streets.length))
-                
+        data.find
+        &&data.find(element => element.neighbourhood == chosen)
+        &&data.find(element => element.neighbourhood == chosen).interval.map(item => {
+                    setAlerts(prevState => (prevState + item.streets.length))        
             })
 
     }, []);
@@ -146,7 +134,18 @@ export default function Radovi(props) {
                     </LinearGradient>
 
                 </View>
-
+                { /*
+    :[
+        neighbourhood::string,
+        interval:
+                [
+                    time:string,
+                    streets:[] 
+                ]
+            }    
+    ]
+     
+    */}
                 {/* Subtitle containing the streets affected by repairs */}
                 <View style={{ flex: 1.8, justifyContent: 'flex-start' }}>
                     <Text style={[styles.chosenTextSubTitle]}>
@@ -154,7 +153,11 @@ export default function Radovi(props) {
                         <Animated.View style={{ flex: 2,transform: [{ scale:fadeAnim }] }}>
                             <Text style={styles.chosenTextSubTitle}>
 
-                                Улице у којима се налазе радови:
+                               {data.find
+                               &&data.find(element=>element.neighbourhood==chosen)
+                               &&data.find(element=>element.neighbourhood==chosen).interval.find(item=>item).streets.length
+                               ?'Улице у којима се налазе радови:'
+                               :'Тренутно нема радова у вашем'+'\n'+' насељу.'}
 
                             </Text>
 

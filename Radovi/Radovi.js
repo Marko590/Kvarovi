@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { Dimensions, Animated, Image, StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
+import { Dimensions, Animated, Image, StyleSheet, Text, View, TouchableOpacity, Button,ActivityIndicator } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 
 import 'react-native-gesture-handler';
@@ -24,10 +24,11 @@ export default function Radovi(props) {
 	  }
 
 	const [check, setCheck] = useState(false);
+	const [isLoading, setLoading] = useState(true);
 	const [data, setData] = useState({});
 	const [html, setHtml] = useState([]);
 	const [content, setContent] = useState("");
-	const [selectedIndex, setIndex] = useState(0);
+	const [selectedIndex, setIndex] = useState(-1);
 	const getData = () => {
 		axios
 			.get("http://192.168.0.31:8082/vodovod/radovi")
@@ -44,8 +45,18 @@ export default function Radovi(props) {
 	};
 	useEffect(() => {
 		getData();
+		setLoading(false)
 	}, []);
+	useEffect(() => {
 
+		Animated.timing(fadeAnim, {
+
+			useNativeDriver: false,
+			toValue: 1,
+			duration: 1500,
+		}).start();
+	}, []);
+	const [fadeAnim] = useState(new Animated.Value(0));
 	const nightColors = ['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']
 	const dayColors=['#A3AE6F', '#85a090', '#6893b0', '#4a85d1', '#2c77f1']
 	return (
@@ -54,26 +65,30 @@ export default function Radovi(props) {
 				<TopTab setDrawerCheck={props.setDrawerCheck} pageName={"Vodovod"+'\n'+'Radovi'}/>
 				
 				<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never' contentContainerStyle={{flexDirection:'column'}}>
-
+					{!isLoading?
+					<Animated.View opacity={fadeAnim}>
 					<StatusBar style="light" />
 					{data.map && data.map((item, index) => {
 						return (
-							<View key={index}>
+							
 								<WorkCard neighbourhood={item.title} index={index} selectedIndex={selectedIndex} setIndex={setIndex} setContent={setContent} content={item.content} />
-							</View>)
+							)
 						})}
-
+						</Animated.View>:<ActivityIndicator/>}
+						{!isLoading?
+						<Animated.View style={{transform:[{scale:fadeAnim}]}}>
 					<LinearGradient colors={['#3b506e', '#cccccc']} style={[styles.cardHolder]}
 						start={{ x: 0, y: 0 }} locations={[1, 1]}>
-
-						<ScrollView showsVerticalScrollIndicator={false}  overScrollMode='never' >
+						
+						<Animated.ScrollView showsVerticalScrollIndicator={false}  overScrollMode='never'  >
 							{selectedIndex == -1 ?
-							null :
+							<RenderHTML source={{ html: '<h1>Притисните на један од наслова изнад.</h1>' }} contentWidth={350} baseStyle={{color:'white'}} /> :
 							<RenderHTML source={{ html: content }} contentWidth={350} baseStyle={{color:'white'}} />}
-						</ScrollView>
+						</Animated.ScrollView>
 
 					</LinearGradient>
-
+					</Animated.View>
+					:<ActivityIndicator size={200}/>}			
 				</ScrollView>
 			
 		</Background>

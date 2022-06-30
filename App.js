@@ -166,7 +166,7 @@ const Kvarovi = (props) => {
 											neighbourhoodInfo.neighbourhood===chosen?
 											neighbourhoodInfo.streetList.map(street=>{
 												return(
-													<Text style={{color:'#dbdbdb',fontSize:15}}>{street}</Text>
+													<Text style={{color:'#dbdbdb',fontSize:15,flexShrink:1}}>▫️ {street.trim()}</Text>
 												)
 												
 											}):null
@@ -202,7 +202,7 @@ const Kvarovi = (props) => {
 										</View>
 										<ScrollView
 											style={{ flex: 2 }}
-											contentContainerStyle={{ padding: 20 }}
+											contentContainerStyle={{ padding: 20,paddingBottom:0 }}
 											showsVerticalScrollIndicator={false}
 											overScrollMode='never'>
 
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
 		marginTop: 10,
 		marginLeft: 15,
 		marginRight: 15,
-		marginBottom: 20,
+		marginBottom: 30,
 		borderRadius: 20,
 		borderWidth: 1,
 		borderColor: 'gray',
