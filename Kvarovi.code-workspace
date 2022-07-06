@@ -4,7 +4,10 @@
 			"path": "."
 		},
 		{
-			"path": "..\\server"
+			"path": "..\\KvaroviServer"
+		},
+		{
+			"path": "..\\..\\server"
 		}
 	],
 	"settings": {}

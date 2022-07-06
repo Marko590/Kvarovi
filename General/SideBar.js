@@ -1,25 +1,107 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useLayoutEffect } from "react";
 import { TouchableOpacity, Text, StyleSheet, View, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import AlertLabel from './AlertLabel';
 import { Picker } from "@react-native-picker/picker";
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import AreaPicker from "../Settings/AreaPicker";
+import axios from 'axios';
 export default function SideBar(props) {
 
-
+	
+	
 	const navigation = useNavigation();
 
 	const moveToScreen = (screen) => {
 		navigation.navigate(screen);
 	}
-	const dayColors=['#3769B9', '#527aa7', '#6d8c94', '#889d82', '#a3ae6f']
-	return (
-		<View>
-			<LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 15,paddingTop:200  }}
-				start={{ x: 0, y: -0.6 }} locations={[0.82, 1]}>
+	const [plumbingAlerts, setPlumbingAlerts] = useState(0);
+	const getPlumbingData = () => {
+		axios
+			.get("https://kvaroviserver.azurewebsites.net/vodovod/kvarovi")
+			.then((response) => {
+				console.log(response.data);
+				setPlumbingData(response.data);
+				setLoading(false);
+			});
+	};
+	const [plumbingData, setPlumbingData] = useState([]);
 
+	function aggregatePlumbingAlerts() {
+		let alert = 0;
+		plumbingData.map && plumbingData.map(item => {
+			item.streets.map(neighbourhoodInfo => {
+				if (neighbourhoodInfo.neighbourhood == chosen) {
+					alert += neighbourhoodInfo.streetList.length
+				}
+			})
+		})
+		console.log(alert)
+		setPlumbingAlerts(alert)
+	}
+	const [electricalAlerts, setElectricalAlerts] = useState(1);
+	const [electricalData, setElectricalData] = useState({});
+    const getElectricalData = () => {
+        axios
+            .get("https://kvaroviserver.azurewebsites.net/struja/radovi")
+            .then((response) => {
+                console.log(response.data);
+                const array = [];
+                setElectricalData(response.data.allData);
+            });
+    };
+
+	function aggregateElectricalAlerts(){
+        setElectricalAlerts(0)
+        electricalData.find
+        &&electricalData.find(element => element.neighbourhood == chosen)
+        &&electricalData.find(element => element.neighbourhood == chosen).interval.map(item => {
+                    setElectricalAlerts(prevState => (prevState + item.streets.length))        
+            })
+    }
+    
+	useLayoutEffect(()=>{
+		getElectricalData()
+		getPlumbingData()
+		aggregateElectricalAlerts()
+		aggregatePlumbingAlerts()
+
+	},[])
+	
+    const readData = async () => {
+        try {
+            const value = await AsyncStorage.getItem('@storage_Key')
+            setChosen(value);
+            if (value !== null) {
+                // value previously stored
+            }
+        } catch (e) {
+            // error reading value
+        }
+    }
+	const [chosen, setChosen] = useState("");
+
+	const dayColors = ['#3769B9', '#527aa7', '#6d8c94', '#889d82', '#a3ae6f']
+	return (
+		<View style={{ flexDirection: 'column' }}>
+			<View style={{ marginTop: 40 }}>
+				<SideBarEntry>
+					<Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>{props.chosen}</Text>
+					
+				</SideBarEntry>
+				<SideBarEntry>
+				<AlertLabel alerts={props.plumbing}/>
+					<AlertLabel alerts={props.electrical}/>
+					
+					</SideBarEntry>
+				<AlertLabel alerts={2}/>
+			</View>
+			<LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 15, paddingTop: 30 }}
+				start={{ x: 0, y: -0.6 }} locations={[0.82, 1]}>
+					
 				<SideBarHeader>
 					<Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>Водовод</Text>
+					
 				</SideBarHeader>
 
 				<SideBarEntry pressEvent={() => { props.setIndex(0) }}>
@@ -50,11 +132,11 @@ export default function SideBar(props) {
 
 
 			</LinearGradient>
-			<View>
+			<View style={{ alignSelf: 'flex-start' }}>
 				<TouchableOpacity style={{ flex: 1 }} onPress={() => { moveToScreen("Settings") }}>
 					<Image
 						source={require('../assets/settings.png')}
-						style={{ width: 50, height: 50, marginTop: 120, marginLeft: 20 }} />
+						style={{ width: 50, height: 50, marginTop: 100, marginLeft: 20 }} />
 				</TouchableOpacity>
 			</View>
 		</View>
@@ -76,7 +158,7 @@ export function SideBarEntry(props) {
 export function SideBarHeader(props) {
 
 	return (
-		<View style={{ paddingTop: 50,marginTop:20}}>
+		<View style={{ paddingTop: 50, marginTop: 20 }}>
 			<View style={{ alignItems: 'center', paddingLeft: 20, height: 60, flexDirection: 'row', justifyContent: 'space-between' }}>
 				{props.children}
 			</View>

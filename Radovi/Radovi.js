@@ -12,8 +12,8 @@ import RenderHTML from 'react-native-render-html';
 import WorkCard from './WorkCard';
 import TopTab from '../General/TopTab';
 
-
-
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default function Radovi(props) {
 
@@ -31,7 +31,7 @@ export default function Radovi(props) {
 	const [selectedIndex, setIndex] = useState(-1);
 	const getData = () => {
 		axios
-			.get("http://192.168.0.31:8082/vodovod/radovi")
+			.get("https://kvaroviserver.azurewebsites.net/vodovod/radovi")
 			.then((response) => {
 				console.log(response.data);
 				const array = [];
@@ -64,7 +64,7 @@ export default function Radovi(props) {
 			
 				<TopTab setDrawerCheck={props.setDrawerCheck} pageName={"Vodovod"+'\n'+'Radovi'}/>
 				
-				<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never' contentContainerStyle={{flexDirection:'column'}}>
+				<ScrollView showsVerticalScrollIndicator={false} overScrollMode='never' contentContainerStyle={{flexDirection:'column',paddingBottom:40}}>
 					{!isLoading?
 					<Animated.View opacity={fadeAnim}>
 					<StatusBar style="light" />
@@ -96,7 +96,7 @@ export default function Radovi(props) {
 }
 const styles = StyleSheet.create({
 	gradient: {
-		height:'100%',
+		height:windowHeight+85,
 		backgroundColor:'#465461'
 	},
 
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
 	},
 	cardHolder: {
 		backgroundColor: '#f0e9e9',
-		height: 400,
+		height: 300,
 		marginTop: 20,
 		borderRadius: 20,
 		width: '90%',

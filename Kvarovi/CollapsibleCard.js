@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   neighbourhoodTitle: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#8c92a1',
+    backgroundColor: '#838791',
     justifyContent: 'space-between',
     borderRadius: 7,
     borderBottomLeftRadius: 0,

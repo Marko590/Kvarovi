@@ -15,7 +15,7 @@ export default function StreetCard(props) {
 
 	const getCoordinates = (address) => {
 		axios
-			.get("http://192.168.0.31:8081/vodovod/coordinates", { params: { address: address } })
+			.get("https://kvaroviserver.azurewebsites.net/vodovod/coordinates", { params: { address: address } })
 			.then((response) => {
 				console.log(response.data);
 				setCoordinates(response.data);

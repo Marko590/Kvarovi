@@ -3,8 +3,8 @@ import { Dimensions, Animated, Image, StyleSheet, Text, View, TouchableOpacity, 
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
-import { Button } from 'react-native-paper';
-import React, { useState, useEffect } from "react";
+
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -14,8 +14,11 @@ import SideMenu from 'react-native-side-menu';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TimeButton from './Kvarovi/TimeButton';
 import Background from './General/Background';
+import AreaPicker from './Settings/AreaPicker';
 import SideBar from './General/SideBar';
 import Settings from './Settings/Settings';
+import AlertLabel from './General/AlertLabel';
+import { Button, Dialog, Portal, Provider } from 'react-native-paper';
 import Radovi from './Radovi/Radovi';
 import * as NavigationBar from 'expo-navigation-bar';
 import About from './General/About';
@@ -47,10 +50,10 @@ const Kvarovi = (props) => {
 	const moveToScreen = (screen) => {
 		navigation.navigate(screen);
 	}
-	
+
 	const getData = () => {
 		axios
-			.get("http://192.168.0.31:8082/vodovod/kvarovi")
+			.get("https://kvaroviserver.azurewebsites.net/vodovod/kvarovi")
 			.then((response) => {
 				console.log(response.data);
 				setData(response.data);
@@ -69,10 +72,7 @@ const Kvarovi = (props) => {
 			// error reading value
 		}
 	}
-
-	useEffect(() => {
-		getData();
-		readData();
+	function aggregateAlerts() {
 		let alert = 0;
 		data.map && data.map(item => {
 			item.streets.map(neighbourhoodInfo => {
@@ -83,9 +83,26 @@ const Kvarovi = (props) => {
 		})
 		console.log(alert)
 		setAlerts(alert)
+	}
+	useLayoutEffect(() => {
+		aggregateAlerts()
+		readData();
+		if (chosen === 'Палилула') {
+			setVisible(false);
+		}
+	})
+	useEffect(() => {
+		getData();
+		readData();
+		if (chosen === 'Палилула') {
+			setVisible(false);
+		}
+
 	}, []);
 	useEffect(() => {
-
+		if (chosen === 'Палилула') {
+			setVisible(false);
+		}
 		Animated.timing(fadeAnim, {
 
 			useNativeDriver: false,
@@ -97,150 +114,153 @@ const Kvarovi = (props) => {
 	const [fadeAnim] = useState(new Animated.Value(0.5));
 	const dayColors = ['#3769B9', '#527aa7', '#6d8c94', '#889d82', '#a3ae6f']
 	const [alerts, setAlerts] = useState(0);
-	
-	
+	const [visible, setVisible] = useState(true);
+	const hideDialog = () => setVisible(false);
+
 
 
 	return (
 		<View>
-			<Background style={{ justifyContent: 'center' }}>
+			{!visible ?
+				<Background style={styles.gradient}>
 
-				{/* View holding the top tab icons */}
-				<TopTab setDrawerCheck={props.setDrawerCheck} pageName={"Vodovod" + '\n' + 'Kvarovi'} />
-
-
-
-
-				<LinearGradient
-					colors={dayColors}
-					style={styles.localCard}
-					start={{ x: 0.5, y: 0 }}
-					locations={[0, 0.25, 0.5, 0.75, 1]}>
-					<View style={{ flex: 1.5, flexDirection: 'row' }}>
+					{/* View holding the top tab icons */}
+					<TopTab setDrawerCheck={props.setDrawerCheck} pageName={"Vodovod" + '\n' + 'Kvarovi'} />
 
 
-						<Text
-							style={[styles.chosenTextTitle, { flex: 3.5, right: '2.5%' }]}>
-							{chosen}
-						</Text>
+					<LinearGradient
+						colors={dayColors}
+						style={styles.localCard}
+						start={{ x: 0.5, y: 0 }}
+						locations={[0, 0.25, 0.5, 0.75, 1]}>
+						<View style={{ flex:1.7, flexDirection: 'row' }}>
 
-						{/* Label showing the number of malfunctions in the selected area*/}
-						<LinearGradient
-							colors={['#B3292B', '#bd3b2c', '#d2602f', '#DF7630']}
-							start={{ x: 0, y: -0.2 }}
-							locations={[0, 0.2, 0.65, 0.85]}
-							style={{ borderRadius: 10, height: 45, alignSelf: 'flex-start', justifyContent: 'center', flex: 1, marginTop: 10 }}>
-							<Animated.View style={{ opacity: fadeAnim }}>
-								{!isLoading ?
-									<Button
-										labelStyle={{ fontSize: 20, flexDirection: 'row', bottom: '10%', right: '10%' }}
-										color='white'
-										icon="traffic-cone"
-										style={{ borderRadius: 30 }}
-										mode="text">
+							<Text
+								style={[styles.chosenTextTitle, { flex: 3.5, right: '2.5%' }]}>
+								{chosen}
+							</Text>
 
-										<Text style={{ fontSize: 25 }}>
-											{alerts}
-										</Text>
-									</Button> : <ActivityIndicator size='large' color={'blue'} />}
-							</Animated.View>
+							{/* Label showing the number of malfunctions in the selected area*/}
+							<AlertLabel alerts={alerts} />
 
-						</LinearGradient>
+						</View>
 
-					</View>
+						{/* Subtitle containing the streets affected by repairs */}
+						<View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'center' }}>
 
-					{/* Subtitle containing the streets affected by repairs */}
-					<View style={{ flex: 1.8, justifyContent: 'flex-start', alignItems: 'center' }}>
-						<Text style={[styles.chosenTextSubTitle]}>
 							{!isLoading ?
 								<Animated.View style={{ flex: 2, transform: [{ scale: fadeAnim }] }}>
 									<Text style={styles.chosenTextSubTitle}>
-										{data.find(element=>element).streets.find(item=>item.neighbourhood==chosen)
-										&&data.find(element=>element).streets.find(item=>item.neighbourhood==chosen).streetList.length?'Улице у којима се налазе радови:':
-										'Тренутно нема радова у вашем'+'\n'+' насељу.'}
+										{data.find && data.find(element => element).streets.find(item => item.neighbourhood == chosen)
+											&& data.find(element => element).streets.find(item => item.neighbourhood == chosen).streetList.length ? 'Улице у којима се налазе радови:' :
+											'Тренутно нема радова у вашем' + '\n' + ' насељу.'}
 									</Text>
-									{data.map(item=>{
-										return(
-										item.streets.map(neighbourhoodInfo=>{
-											return(
-											neighbourhoodInfo.neighbourhood===chosen?
-											neighbourhoodInfo.streetList.map(street=>{
-												return(
-													<Text style={{color:'#dbdbdb',fontSize:15,flexShrink:1}}>▫️ {street.trim()}</Text>
+									{data.map && data.map(item => {
+										return (
+											item.streets.map(neighbourhoodInfo => {
+												return (
+													neighbourhoodInfo.neighbourhood === chosen ?
+														neighbourhoodInfo.streetList.map(street => {
+															return (
+																<Text style={{ color: '#dbdbdb', fontSize: 15, flexShrink: 1 }}>▫️ {street.trim()}</Text>
+															)
+
+														}) : null
 												)
-												
-											}):null
-											)
 											})
 										)
-										})
-									
+									})
+
 									}
 								</Animated.View> : <ActivityIndicator style={{ alignSelf: 'center' }} size={75} />}
-						</Text>
-					</View>
 
-				</LinearGradient>
+						</View>
 
 
 
+					</LinearGradient>
 
 
-				{/* View holding the cards displaying the streets */}
-				{!isLoading ?
-					<ScrollView horizontal showsHorizontalScrollIndicator={false} overScrollMode='never' contentContainerStyle={{ padding: 35, paddingLeft: 40, paddingTop: 0, justifyContent: 'center', alignItems: 'center' }}>
-						{data.map && data.map(a => {
-							return (
-								<Animated.View style={{ opacity: fadeAnim }}>
-									<LinearGradient
-										colors={['#3b506e', '#aaaaaa']}
-										style={[styles.cardHolder]}
-										start={{ x: 0, y: 0 }}
-										locations={[1, 1]}>
-										<View style={{ borderBottomWidth: 0.5, borderRadius: 15, borderColor: '#d9d9d9', padding: 15 }}>
-											<Text style={{ color: '#d9d9d9', fontSize: 30, textAlign: 'center', fontFamily: 'sans-serif-medium' }}>{a.time}</Text>
+					{/* View holding the cards displaying the streets */}
+					{!isLoading ?
+						<ScrollView horizontal showsHorizontalScrollIndicator={false} overScrollMode='never' contentContainerStyle={{ padding: 35, paddingLeft: 40, paddingTop: 0, justifyContent: 'center', alignItems: 'center' }}>
+
+							{data.map && data.map(a => {
+								return (
+									<Animated.View style={{ opacity: fadeAnim }}>
+										<LinearGradient
+											colors={['#3b506e', '#aaaaaa']}
+											style={[styles.cardHolder]}
+											start={{ x: 0, y: 0 }}
+											locations={[1, 1]}>
+											<View style={{ borderBottomWidth: 0.5, borderRadius: 15, borderColor: '#d9d9d9', padding: 15 }}>
+												<Text style={{ color: '#d9d9d9', fontSize: 30, textAlign: 'center', fontFamily: 'sans-serif-medium' }}>{a.time}</Text>
+											</View>
+											<ScrollView
+												style={{ flex: 2 }}
+												contentContainerStyle={{ padding: 20, paddingBottom: 0 }}
+												showsVerticalScrollIndicator={false}
+												overScrollMode='never'>
+
+												{a.streets.map(b => {
+													return (
+														<CollapsibleCard neighbourhood={b.neighbourhood}>
+															{b.streetList.map(street => {
+																return (
+																	<StreetCard
+																		style={b.streetList.indexOf(street) == (b.streetList.length - 1)
+																			? styles.expandableCardLast
+																			: styles.expandableCard}
+																		street={street} />
+																)
+															})}
+														</CollapsibleCard>
+													)
+												})}
+											</ScrollView>
+
+
+										</LinearGradient>
+									</Animated.View>
+								)
+							})}
+
+						</ScrollView> : <Animated.View style={{ opacity: fadeAnim }}>
+							<LinearGradient
+								colors={['#3b506e', '#aaaaaa']}
+								style={[styles.cardHolder]}
+								start={{ x: 0, y: 0 }}
+								locations={[1, 1]}>
+
+								<ActivityIndicator size={150} />
+							</LinearGradient></Animated.View>
+					}
+					<StatusBar style="light" />
+
+				</Background> :
+				<Background style={styles.gradient}>
+					<Provider style={{ elevation: 50 }}>
+						<Portal>
+							<Dialog visible={visible} onDismiss={(hideDialog)} dismissable={false}>
+								<Dialog.Content>
+									
+									<View style={{ height: 200 ,flexDirection:'column'}}>
+									<View style={{flex:1}}>
+										<Text style={{fontSize:30}}>Одаберите насеље у којем живите:</Text>
 										</View>
-										<ScrollView
-											style={{ flex: 2 }}
-											contentContainerStyle={{ padding: 20,paddingBottom:0 }}
-											showsVerticalScrollIndicator={false}
-											overScrollMode='never'>
-
-											{a.streets.map(b => {
-												return (
-													<CollapsibleCard neighbourhood={b.neighbourhood}>
-														{b.streetList.map(street => {
-															return (
-																<StreetCard
-																	style={b.streetList.indexOf(street) == (b.streetList.length - 1)
-																		? styles.expandableCardLast
-																		: styles.expandableCard}
-																	street={street} />
-															)
-														})}
-													</CollapsibleCard>
-												)
-											})}
-										</ScrollView>
-
-									</LinearGradient>
-								</Animated.View>
-							)
-						})}
-
-					</ScrollView> : <Animated.View style={{ opacity: fadeAnim }}>
-						<LinearGradient
-							colors={['#3b506e', '#aaaaaa']}
-							style={[styles.cardHolder]}
-							start={{ x: 0, y: 0 }}
-							locations={[1, 1]}>
-
-							<ActivityIndicator size={150} />
-						</LinearGradient></Animated.View>
-				}
-				<StatusBar style="auto" />
-
-			</Background>
+										<View style={{flex:1}}>
+										<AreaPicker />
+										</View>
+									</View>
+									<Dialog.Actions style={{ alignSelf: 'flex-end' }}>
+									
+										<Button onPress={hideDialog}>Потврди</Button>
+									</Dialog.Actions>
+								</Dialog.Content>
+							</Dialog>
+						</Portal>
+					</Provider>
+				</Background>}
 		</View>
 	);
 };
@@ -249,6 +269,8 @@ const Kvarovi = (props) => {
 
 function Main() {
 
+	
+	
 	const [selectedIndex, setIndex] = useState(0);
 	const [check, setCheck] = useState(false);
 	NavigationBar.setBackgroundColorAsync("#323b59");
@@ -296,7 +318,7 @@ const styles = StyleSheet.create({
 
 	},
 	gradient: {
-		height: windowHeight + 340,
+		height: windowHeight + 75,
 		width: windowWidth,
 		backgroundColor: '#2d2d44'
 	},
@@ -341,7 +363,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#f0e9e9',
 		justifyContent: 'center',
 		height: 375,
-		marginTop: 25,
+	
 		borderRadius: 20,
 		width: 320,
 		alignSelf: 'center',
@@ -360,7 +382,7 @@ const styles = StyleSheet.create({
 		marginTop: 10,
 		marginLeft: 15,
 		marginRight: 15,
-		marginBottom: 30,
+		marginBottom: 15,
 		borderRadius: 20,
 		borderWidth: 1,
 		borderColor: 'gray',
@@ -391,7 +413,7 @@ const styles = StyleSheet.create({
 		color: '#d1d1d1',
 		fontSize: 40,
 		fontFamily: 'sans-serif-light',
-		marginTop: 10,
+		marginTop: 0,
 		marginLeft: 5
 
 
