@@ -4,10 +4,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import AlertLabel from './AlertLabel';
 import { Picker } from "@react-native-picker/picker";
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AreaPicker from "../Settings/AreaPicker";
 import axios from 'axios';
 export default function SideBar(props) {
-
+	
 	
 	
 	const navigation = useNavigation();
@@ -15,14 +16,14 @@ export default function SideBar(props) {
 	const moveToScreen = (screen) => {
 		navigation.navigate(screen);
 	}
-	const [plumbingAlerts, setPlumbingAlerts] = useState(0);
+	const [isLoading,setLoading]=useState(true);
+	const [plumbingAlerts, setPlumbingAlerts] = useState(1);
 	const getPlumbingData = () => {
 		axios
 			.get("https://kvaroviserver.azurewebsites.net/vodovod/kvarovi")
 			.then((response) => {
 				console.log(response.data);
 				setPlumbingData(response.data);
-				setLoading(false);
 			});
 	};
 	const [plumbingData, setPlumbingData] = useState([]);
@@ -36,7 +37,7 @@ export default function SideBar(props) {
 				}
 			})
 		})
-		console.log(alert)
+		console.log("\n\n\n\n\n\n\n Plumbing alerts are :"+alert)
 		setPlumbingAlerts(alert)
 	}
 	const [electricalAlerts, setElectricalAlerts] = useState(1);
@@ -45,9 +46,10 @@ export default function SideBar(props) {
         axios
             .get("https://kvaroviserver.azurewebsites.net/struja/radovi")
             .then((response) => {
-                console.log(response.data);
+                console.log("Fetching data \n\n\n\n"+response.data);
                 const array = [];
                 setElectricalData(response.data.allData);
+				
             });
     };
 
@@ -56,18 +58,31 @@ export default function SideBar(props) {
         electricalData.find
         &&electricalData.find(element => element.neighbourhood == chosen)
         &&electricalData.find(element => element.neighbourhood == chosen).interval.map(item => {
-                    setElectricalAlerts(prevState => (prevState + item.streets.length))        
+                    setElectricalAlerts(prevState => (prevState + item.streets.length))
+					     
             })
+			console.log("\n\n\n\n\n\n\n Electrical alerts are :"+electricalAlerts)   
     }
-    
-	useLayoutEffect(()=>{
-		getElectricalData()
-		getPlumbingData()
-		aggregateElectricalAlerts()
-		aggregatePlumbingAlerts()
 
+	const [check,setCheck]=useState(false);
+
+	useLayoutEffect(()=>{
+		readData()
+		aggregateElectricalAlerts();
+		aggregatePlumbingAlerts();
+		
+	})
+	useEffect(()=>{
+		readData();
+		getElectricalData();
+		getPlumbingData();
+		
+		setLoading(false);
 	},[])
-	
+	useEffect(()=>{
+		setCheck(true)
+	})
+	const [chosen, setChosen] = useState("");
     const readData = async () => {
         try {
             const value = await AsyncStorage.getItem('@storage_Key')
@@ -79,21 +94,27 @@ export default function SideBar(props) {
             // error reading value
         }
     }
-	const [chosen, setChosen] = useState("");
+
 
 	const dayColors = ['#3769B9', '#527aa7', '#6d8c94', '#889d82', '#a3ae6f']
 	return (
 		<View style={{ flexDirection: 'column' }}>
 			<View style={{ marginTop: 40 }}>
-				<SideBarEntry>
-					<Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>{props.chosen}</Text>
+				<SideBarEntry style={[styles.sideBarEntry,{paddingLeft:30}]}>
+					<Text style={{ fontSize: 30, fontFamily: 'sans-serif-light' }}>{chosen}</Text>
 					
 				</SideBarEntry>
-				<SideBarEntry>
-				<AlertLabel alerts={props.plumbing}/>
-					<AlertLabel alerts={props.electrical}/>
+				<SideBarEntry style={styles.sideBarEntryNoBorder}>
+					<View>
+				<AlertLabel alerts={plumbingAlerts} icon={'water-alert'}/>
 					
+					</View>
+					
+					<View>
+					<AlertLabel alerts={electricalAlerts} icon={'lightning-bolt'}/>
+					</View>
 					</SideBarEntry>
+					
 				<AlertLabel alerts={2}/>
 			</View>
 			<LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 15, paddingTop: 30 }}
@@ -104,12 +125,12 @@ export default function SideBar(props) {
 					
 				</SideBarHeader>
 
-				<SideBarEntry pressEvent={() => { props.setIndex(0) }}>
+				<SideBarEntry style={styles.sideBarEntry} pressEvent={() => { props.setIndex(0) }}>
 					<Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Кварови</Text>
 					<ChevronRight />
 				</SideBarEntry>
 
-				<SideBarEntry pressEvent={() => { props.setIndex(1) }}>
+				<SideBarEntry style={styles.sideBarEntry} pressEvent={() => { props.setIndex(1) }}>
 					<Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Радови</Text>
 					<ChevronRight />
 				</SideBarEntry>
@@ -125,7 +146,7 @@ export default function SideBar(props) {
 				</SideBarHeader>
 
 
-				<SideBarEntry pressEvent={() => { props.setIndex(2) }}>
+				<SideBarEntry style={styles.sideBarEntry} pressEvent={() => { props.setIndex(2) }}>
 					<Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Кварови</Text>
 					<ChevronRight />
 				</SideBarEntry>
@@ -148,7 +169,7 @@ export function SideBarEntry(props) {
 
 	return (
 		<TouchableOpacity onPress={() => { props.pressEvent() }}>
-			<View style={styles.sideBarEntry}>
+			<View style={props.style}>
 				{props.children}
 			</View>
 		</TouchableOpacity>
@@ -213,12 +234,22 @@ const styles = StyleSheet.create({
 	sideBarEntry: {
 		alignItems: 'center',
 		paddingLeft: 20,
+		paddingRight: 20,
 		height: 60,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		borderBottomWidth: 1,
 		borderBottomColor: 'black',
 		borderRadius: 15
+	},
+	sideBarEntryNoBorder: {
+		alignItems: 'center',
+		paddingLeft: 20,
+		paddingRight: 20,
+		height: 60,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		
 	},
 	categoryContainer: {
 

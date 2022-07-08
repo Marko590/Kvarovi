@@ -124,7 +124,7 @@ export default function Radovi(props) {
                     </Text>
 
                     {/* Label showing the number of malfunctions in the selected area*/}
-                   <AlertLabel alerts={alerts}/>
+                   <AlertLabel alerts={alerts} icon={'traffic-cone'}/>
 
                 </View>
                 { /*

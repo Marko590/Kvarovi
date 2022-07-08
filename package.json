@@ -59,7 +59,9 @@
     "react-native-web": "^0.17.7",
     "react-native-webview": "11.18.1",
     "rn-bottom-drawer": "^1.4.3",
-    "util": "^0.12.4"
+    "util": "^0.12.4",
+    "expo-background-fetch": "~10.2.0",
+    "expo-task-manager": "~10.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

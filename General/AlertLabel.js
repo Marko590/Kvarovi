@@ -18,7 +18,7 @@ export default function AlertLabel(props){
         <Button
             labelStyle={{ fontSize: 25, flexDirection: 'row', bottom: '10%', right: '10%' }}
             color='white'
-            icon="traffic-cone"
+            icon={props.icon}
             style={{ borderRadius: 30 }}
             mode="text">
             <Text style={{ fontSize: 25 }}>

@@ -141,7 +141,7 @@ const Kvarovi = (props) => {
 							</Text>
 
 							{/* Label showing the number of malfunctions in the selected area*/}
-							<AlertLabel alerts={alerts} />
+							<AlertLabel alerts={alerts} icon={'traffic-cone'} />
 
 						</View>
 
@@ -183,11 +183,11 @@ const Kvarovi = (props) => {
 
 					{/* View holding the cards displaying the streets */}
 					{!isLoading ?
-						<ScrollView horizontal showsHorizontalScrollIndicator={false} overScrollMode='never' contentContainerStyle={{ padding: 35, paddingLeft: 40, paddingTop: 0, justifyContent: 'center', alignItems: 'center' }}>
+						<ScrollView horizontal showsHorizontalScrollIndicator={false} overScrollMode='never' contentContainerStyle={{ padding: 35, paddingLeft: 15, paddingTop: 0, justifyContent: 'center', alignItems: 'center' }}>
 
 							{data.map && data.map(a => {
 								return (
-									<Animated.View style={{ opacity: fadeAnim }}>
+									<Animated.View style={{ opacity: fadeAnim,marginLeft:20 }}>
 										<LinearGradient
 											colors={['#3b506e', '#aaaaaa']}
 											style={[styles.cardHolder]}
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
 		color: '#d1d1d1',
 		fontSize: 20,
 		marginBottom: 10,
-		marginRight: 10,
+		marginRight: 20,
 		fontFamily: 'sans-serif-light'
 	},
 
