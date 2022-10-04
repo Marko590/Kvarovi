@@ -1,92 +1,69 @@
-import { StatusBar } from 'expo-status-bar';
-import { Dimensions, Animated, Image, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
+import { Dimensions, Animated, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import 'react-native-gesture-handler';
-
-import React, { useState, useEffect,useLayoutEffect } from "react";
-import { ScrollView } from 'react-native-gesture-handler';
-import axios from 'axios';
+import React from "react";
 import { LinearGradient } from 'expo-linear-gradient';
-import StreetCard from '../Kvarovi/StreetCard';
-import CollapsibleCard from '../Kvarovi/CollapsibleCard';
-import SideMenu from 'react-native-side-menu';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import TimeButton from '../Kvarovi/TimeButton';
-import Background from './Background';
-import AreaPicker from '../Settings/AreaPicker';
-import SideBar from './SideBar';
-import Settings from '../Settings/Settings';
 import AlertLabel from './AlertLabel';
-import { Button, Dialog, Portal,Provider } from 'react-native-paper';
-import Radovi from '../Radovi/Radovi';
-import * as NavigationBar from 'expo-navigation-bar';
-import About from './About';
-import Struja from '../Struja/Struja';
-import TopTab from './TopTab';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 
+export default function LocalCard(props) {
+	const dayColors = ['#3769B9', '#527aa7', '#6d8c94', '#889d82', '#a3ae6f']
+	const data = props.data;
+	return (
+
+		<LinearGradient
+			colors={dayColors}
+			style={styles.localCard}
+			start={{ x: 0.5, y: 0 }}
+			locations={[0, 0.25, 0.5, 0.75, 1]}>
+			<View style={{ flex: 2, flexDirection: 'row' }}>
+
+				<Text
+					style={[styles.chosenTextTitle, { flex: 3.5, right: '2.5%' }]}>
+					{props.chosen}
+				</Text>
+
+				{/* Label showing the number of malfunctions in the selected area*/}
+				<AlertLabel alerts={props.alerts} />
+
+			</View>
+
+			{/* Subtitle containing the streets affected by repairs */}
+			<View style={{ flex: 1.8, justifyContent: 'flex-start', alignItems: 'center' }}>
+
+				{!props.isLoading ?
+					<Animated.View style={{ flex: 2, transform: [{ scale: fadeAnim }] }}>
+						<Text style={styles.chosenTextSubTitle}>
+							{data.find && data.find(element => element).streets.find(item => item.neighbourhood == chosen)
+								&& data.find(element => element).streets.find(item => item.neighbourhood == chosen).streetList.length ? 'Улице у којима се налазе радови:' :
+								'Тренутно нема радова у вашем' + '\n' + ' насељу.'}
+						</Text>
+						{data.map && data.map(item => {
+							return (
+								item.streets.map(neighbourhoodInfo => {
+									return (
+										neighbourhoodInfo.neighbourhood === chosen ?
+											neighbourhoodInfo.streetList.map(street => {
+												return (
+													<Text style={{ color: '#dbdbdb', fontSize: 15, flexShrink: 1 }}>▫️ {street.trim()}</Text>
+												)
+
+											}) : null
+									)
+								})
+							)
+						})
+
+						}
+					</Animated.View> : <ActivityIndicator style={{ alignSelf: 'center' }} size={75} />}
+
+			</View>
 
 
-export default function LocalCard(props){
-    const dayColors = ['#3769B9', '#527aa7', '#6d8c94', '#889d82', '#a3ae6f']
-        const data=props.data;
-    return(
-        
-				<LinearGradient
-                colors={dayColors}
-                style={styles.localCard}
-                start={{ x: 0.5, y: 0 }}
-                locations={[0, 0.25, 0.5, 0.75, 1]}>
-                <View style={{ flex: 2, flexDirection: 'row' }}>
 
-                    <Text
-                        style={[styles.chosenTextTitle, { flex: 3.5, right: '2.5%' }]}>
-                        {props.chosen}
-                    </Text>
-
-                    {/* Label showing the number of malfunctions in the selected area*/}
-                    <AlertLabel alerts={props.alerts}/>
-
-                </View>
-
-                {/* Subtitle containing the streets affected by repairs */}
-                <View style={{ flex: 1.8, justifyContent: 'flex-start', alignItems: 'center' }}>
-                    
-                        {!props.isLoading ?
-                            <Animated.View style={{ flex: 2, transform: [{ scale: fadeAnim }] }}>
-                                <Text style={styles.chosenTextSubTitle}>
-                                    {data.find&&data.find(element=>element).streets.find(item=>item.neighbourhood==chosen)
-                                    &&data.find(element=>element).streets.find(item=>item.neighbourhood==chosen).streetList.length?'Улице у којима се налазе радови:':
-                                    'Тренутно нема радова у вашем'+'\n'+' насељу.'}
-                                </Text>
-                                {data.map&&data.map(item=>{
-                                    return(
-                                    item.streets.map(neighbourhoodInfo=>{
-                                        return(
-                                        neighbourhoodInfo.neighbourhood===chosen?
-                                        neighbourhoodInfo.streetList.map(street=>{
-                                            return(
-                                                <Text style={{color:'#dbdbdb',fontSize:15,flexShrink:1}}>▫️ {street.trim()}</Text>
-                                            )
-                                            
-                                        }):null
-                                        )
-                                        })
-                                    )
-                                    })
-                                
-                                }
-                            </Animated.View> : <ActivityIndicator style={{ alignSelf: 'center' }} size={75} />}
-                                
-                </View>
-                                
-            
-
-            </LinearGradient>
-    )
+		</LinearGradient>
+	)
 
 }
 

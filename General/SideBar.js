@@ -7,8 +7,16 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AreaPicker from "../Settings/AreaPicker";
 import axios from 'axios';
+import * as Notifications from 'expo-notifications';
 export default function SideBar(props) {
 	
+	Notifications.setNotificationHandler({
+		handleNotification: async () => {
+			return {
+				shouldShowAlert: true,	
+			}
+		}
+	})
 	
 	
 	const navigation = useNavigation();
@@ -20,9 +28,9 @@ export default function SideBar(props) {
 	const [plumbingAlerts, setPlumbingAlerts] = useState(1);
 	const getPlumbingData = () => {
 		axios
-			.get("https://kvaroviserver.azurewebsites.net/vodovod/kvarovi")
+			.get("https://aplikacijaserver.azurewebsites.net/vodovod/kvarovi")
 			.then((response) => {
-				console.log(response.data);
+				
 				setPlumbingData(response.data);
 			});
 	};
@@ -37,17 +45,16 @@ export default function SideBar(props) {
 				}
 			})
 		})
-		console.log("\n\n\n\n\n\n\n Plumbing alerts are :"+alert)
+		
 		setPlumbingAlerts(alert)
 	}
 	const [electricalAlerts, setElectricalAlerts] = useState(1);
 	const [electricalData, setElectricalData] = useState({});
     const getElectricalData = () => {
         axios
-            .get("https://kvaroviserver.azurewebsites.net/struja/radovi")
+            .get("https://aplikacijaserver.azurewebsites.net/struja/radovi")
             .then((response) => {
-                console.log("Fetching data \n\n\n\n"+response.data);
-                const array = [];
+              
                 setElectricalData(response.data.allData);
 				
             });
@@ -61,10 +68,9 @@ export default function SideBar(props) {
                     setElectricalAlerts(prevState => (prevState + item.streets.length))
 					     
             })
-			console.log("\n\n\n\n\n\n\n Electrical alerts are :"+electricalAlerts)   
+			
     }
-
-	const [check,setCheck]=useState(false);
+	
 
 	useLayoutEffect(()=>{
 		readData()
@@ -76,12 +82,10 @@ export default function SideBar(props) {
 		readData();
 		getElectricalData();
 		getPlumbingData();
-		
+	
 		setLoading(false);
 	},[])
-	useEffect(()=>{
-		setCheck(true)
-	})
+	
 	const [chosen, setChosen] = useState("");
     const readData = async () => {
         try {
@@ -94,17 +98,19 @@ export default function SideBar(props) {
             // error reading value
         }
     }
+	
 
-
-	const dayColors = ['#3769B9', '#527aa7', '#6d8c94', '#889d82', '#a3ae6f']
+	
 	return (
 		<View style={{ flexDirection: 'column' }}>
-			<View style={{ marginTop: 40 }}>
-				<SideBarEntry style={[styles.sideBarEntry,{paddingLeft:30}]}>
+			<LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 15, paddingTop: 30 }}
+				start={{ x: 0, y: -0.6 }} locations={[0.82, 1]}>
+			<View style={{ marginTop: 20 }}>
+				<SideBarChosen>
 					<Text style={{ fontSize: 30, fontFamily: 'sans-serif-light' }}>{chosen}</Text>
 					
-				</SideBarEntry>
-				<SideBarEntry style={styles.sideBarEntryNoBorder}>
+				</SideBarChosen>
+				<SideBarEntry style={styles.sideBarEntryNoBorder} pressEvent={() => {}}>
 					<View>
 				<AlertLabel alerts={plumbingAlerts} icon={'water-alert'}/>
 					
@@ -117,8 +123,7 @@ export default function SideBar(props) {
 					
 				<AlertLabel alerts={2}/>
 			</View>
-			<LinearGradient colors={['#ffffff', '#dcdcdc']} style={{ borderRadius: 15, paddingTop: 30 }}
-				start={{ x: 0, y: -0.6 }} locations={[0.82, 1]}>
+			
 					
 				<SideBarHeader>
 					<Text style={{ fontSize: 40, fontFamily: 'sans-serif-light' }}>Водовод</Text>
@@ -151,13 +156,21 @@ export default function SideBar(props) {
 					<ChevronRight />
 				</SideBarEntry>
 
+				
+
 
 			</LinearGradient>
+
+			
+			<SideBarEntry style={[styles.sideBarEntry,{marginTop:30}]} pressEvent={() => { props.setIndex(3) }}>
+					<Text style={{ fontSize: 20, fontFamily: 'monospace' }}>Пријава кварова</Text>
+					<ChevronRight />
+				</SideBarEntry>
 			<View style={{ alignSelf: 'flex-start' }}>
 				<TouchableOpacity style={{ flex: 1 }} onPress={() => { moveToScreen("Settings") }}>
 					<Image
 						source={require('../assets/settings.png')}
-						style={{ width: 50, height: 50, marginTop: 100, marginLeft: 20 }} />
+						style={{ width: 50, height: 50, marginTop: 50, marginLeft: 20 }} />
 				</TouchableOpacity>
 			</View>
 		</View>
@@ -186,6 +199,24 @@ export function SideBarHeader(props) {
 		</View>
 	)
 }
+
+export function SideBarChosen(props) {
+
+	return (
+	
+			<View style={{alignItems: 'center',
+		paddingLeft: 20,
+		paddingRight: 20,
+		height: 60,
+		flexDirection: 'row',
+		justifyContent: 'center',}}>
+				{props.children}
+			</View>
+		
+	)
+}
+
+
 
 export function ChevronRight(props) {
 

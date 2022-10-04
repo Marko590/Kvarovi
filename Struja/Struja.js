@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import { Dimensions, Animated, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { Dimensions, Animated, StyleSheet, Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { Picker } from "@react-native-picker/picker";
 import 'react-native-gesture-handler';
 import React, { useState, useEffect, useLayoutEffect } from "react";
@@ -8,11 +8,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import Background from '../General/Background';
-import RenderHTML from 'react-native-render-html';
-import WorkCard from '../Radovi/WorkCard';
 import TopTab from '../General/TopTab';
 import AlertLabel from '../General/AlertLabel';
-import { ActivityIndicator, Button } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ElectricalStreetCard from './ElectricalStreetCard'
 
@@ -33,13 +31,11 @@ export default function Radovi(props) {
     const [data, setData] = useState({});
     const getData = () => {
         axios
-            .get("https://kvaroviserver.azurewebsites.net/struja/radovi")
+            .get("https://aplikacijaserver.azurewebsites.net/struja/radovi")
             .then((response) => {
-                console.log(response.data);
+                
                 const array = [];
                 setData(response.data.allData);
-
-
             });
     };
 
@@ -182,7 +178,7 @@ export default function Radovi(props) {
                     <Picker.Item label="Сурчин" value="Сурчин" />
                 </Picker>
             </LinearGradient>
-            <StatusBar style="auto" />
+            <StatusBar style="light" />
             <ScrollView horizontal showsHorizontalScrollIndicator={false} overScrollMode='never' contentContainerStyle={{ padding: 35,paddingTop:0,paddingBottom:90, justifyContent: 'center', alignItems: 'center' }}>
 
                 {data.find && data.find(element => element.neighbourhood == chosenCurrent) ? data.find(element => element.neighbourhood == chosenCurrent).interval.map(item => {

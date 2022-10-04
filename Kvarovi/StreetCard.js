@@ -1,10 +1,11 @@
 
 import { Text } from 'react-native';
-
+import * as Notifications from 'expo-notifications';
 import React, { useState } from "react";
 import { Pressable } from "@react-native-material/core";
 import ModalWrapper from './ModalWrapper';
 import axios from 'axios';
+import { addNotificationsDroppedListener } from 'expo-notifications';
 
 
 export default function StreetCard(props) {
@@ -15,9 +16,8 @@ export default function StreetCard(props) {
 
 	const getCoordinates = (address) => {
 		axios
-			.get("https://kvaroviserver.azurewebsites.net/vodovod/coordinates", { params: { address: address } })
+			.post("http://192.168.0.29:3000/vodovod/coordinates", { address: address } )
 			.then((response) => {
-				console.log(response.data);
 				setCoordinates(response.data);
 			});
 	};

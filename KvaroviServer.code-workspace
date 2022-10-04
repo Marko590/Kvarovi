@@ -1,10 +1,10 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"path": "../KvaroviServer"
 		},
 		{
-			"path": "../KvaroviServer"
+			"path": "."
 		}
 	],
 	"settings": {}

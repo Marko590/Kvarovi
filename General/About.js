@@ -29,19 +29,19 @@ export default function About(props) {
 			<View style={styles.contactView}>
 
 				<TouchableOpacity onPress={() => { Linking.openURL('https://github.com/Marko590') }} style={{ flex: 1, justifyContent: 'center' }}>
-					<Image source={require('../assets/git.png')} style={{ width: 40, height: 40,tintColor:'#dbdbdb' }} />
+					<Image source={require('../assets/git.png')} style={{ width: 40, height: 40, tintColor: '#dbdbdb' }} />
 				</TouchableOpacity>
 
 				<TouchableOpacity onPress={() => { Linking.openURL('mailto:marko.bojkovic00@outlook.com') }} style={{ flex: 1, alignSelf: 'center' }}>
-					<Image source={require('../assets/email.png')} style={{ width: 40, height: 40,tintColor:'#dbdbdb' }} />
+					<Image source={require('../assets/email.png')} style={{ width: 40, height: 40, tintColor: '#dbdbdb' }} />
 				</TouchableOpacity>
 
 				<TouchableOpacity onPress={() => { }} style={{ flex: 1, flexGrow: 1 }}>
-					<Image source={require('../assets/play.png')} style={{ width: 40, height: 45,tintColor:'#dbdbdb' }} />
+					<Image source={require('../assets/play.png')} style={{ width: 40, height: 45, tintColor: '#dbdbdb' }} />
 				</TouchableOpacity>
 
 				<TouchableOpacity onPress={() => { }} style={{ flex: 1, flexGrow: 1 }}>
-					<Image source={require('../assets/play.png')} style={{ width: 40, height: 45,tintColor:'#dbdbdb' }} />
+					<Image source={require('../assets/play.png')} style={{ width: 40, height: 45, tintColor: '#dbdbdb' }} />
 				</TouchableOpacity>
 
 			</View>

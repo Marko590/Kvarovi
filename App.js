@@ -1,9 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { Dimensions, Animated, Image, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
-
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'axios';
@@ -12,7 +11,6 @@ import StreetCard from './Kvarovi/StreetCard';
 import CollapsibleCard from './Kvarovi/CollapsibleCard';
 import SideMenu from 'react-native-side-menu';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import TimeButton from './Kvarovi/TimeButton';
 import Background from './General/Background';
 import AreaPicker from './Settings/AreaPicker';
 import SideBar from './General/SideBar';
@@ -24,8 +22,19 @@ import * as NavigationBar from 'expo-navigation-bar';
 import About from './General/About';
 import Struja from './Struja/Struja';
 import TopTab from './General/TopTab';
+import * as Notifications from 'expo-notifications';
+import Prijava from './Prijava';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: false,
+		shouldSetBadge: false,
+	}),
+});
 
 function TabIcon(props) {
 	return (
@@ -40,28 +49,10 @@ function TabIcon(props) {
 
 
 const Kvarovi = (props) => {
-
+	const [visible, setVisible] = useState(true);
+	// Read the chosen area from loacl storage.
 	const [chosen, setChosen] = useState("");
-	const [selectedIndex, setIndex] = useState(0);
-	const [data, setData] = useState([]);
-	const [isLoading, setLoading] = useState(true);
-	const navigation = useNavigation();
-
-	const moveToScreen = (screen) => {
-		navigation.navigate(screen);
-	}
-
-	const getData = () => {
-		axios
-			.get("https://kvaroviserver.azurewebsites.net/vodovod/kvarovi")
-			.then((response) => {
-				console.log(response.data);
-				setData(response.data);
-				setLoading(false);
-			});
-	};
-
-	const readData = async () => {
+	const readChosen = async () => {
 		try {
 			const value = await AsyncStorage.getItem('@storage_Key')
 			setChosen(value);
@@ -72,6 +63,21 @@ const Kvarovi = (props) => {
 			// error reading value
 		}
 	}
+
+	//Fetch plumbing data from the server, set the loading check to finished.
+	const [data, setData] = useState([]);
+	const getData = () => {
+		axios
+			.get("http://192.168.0.29:3000/vodovod/kvarovi")
+			.then((response) => {
+				setData(response.data);
+				setLoading(false);
+			});
+	};
+	const [isLoading, setLoading] = useState(true);
+
+	//Function for aggregating plumbing alerts from recieved data.
+	const [alerts, setAlerts] = useState(0);
 	function aggregateAlerts() {
 		let alert = 0;
 		data.map && data.map(item => {
@@ -81,59 +87,57 @@ const Kvarovi = (props) => {
 				}
 			})
 		})
-		console.log(alert)
 		setAlerts(alert)
+	}
+	async function registerForPushNotificationsAsync() {
+		token = await ((await Notifications.getExpoPushTokenAsync()).data)
+		console.log("\n\n\n TOKEN IS : " + token)
 	}
 	useLayoutEffect(() => {
 		aggregateAlerts()
-		readData();
+		readChosen();
 		if (chosen === 'Палилула') {
 			setVisible(false);
 		}
 	})
 	useEffect(() => {
 		getData();
-		readData();
+		readChosen();
 		if (chosen === 'Палилула') {
 			setVisible(false);
 		}
-
+		registerForPushNotificationsAsync()
 	}, []);
 	useEffect(() => {
 		if (chosen === 'Палилула') {
 			setVisible(false);
 		}
 		Animated.timing(fadeAnim, {
-
 			useNativeDriver: false,
 			toValue: 1,
 			duration: 1500,
 		}).start();
 	}, []);
-	const nightColors = ['#9466C2', '#9279c4', '#8f8cc7', '#8d9fc9', '#8AB2CB']
+
 	const [fadeAnim] = useState(new Animated.Value(0.5));
-	const dayColors = ['#3769B9', '#527aa7', '#6d8c94', '#889d82', '#a3ae6f']
-	const [alerts, setAlerts] = useState(0);
-	const [visible, setVisible] = useState(true);
-	const hideDialog = () => setVisible(false);
+	const colorScheme = ['#3769B9', '#527aa7', '#6d8c94', '#889d82', '#a3ae6f']
 
-
+	function hideDialog() {
+		return setVisible(false);
+	}
 
 	return (
 		<View>
 			{!visible ?
 				<Background style={styles.gradient}>
-
 					{/* View holding the top tab icons */}
 					<TopTab setDrawerCheck={props.setDrawerCheck} pageName={"Vodovod" + '\n' + 'Kvarovi'} />
-
-
 					<LinearGradient
-						colors={dayColors}
+						colors={colorScheme}
 						style={styles.localCard}
 						start={{ x: 0.5, y: 0 }}
 						locations={[0, 0.25, 0.5, 0.75, 1]}>
-						<View style={{ flex:1.7, flexDirection: 'row' }}>
+						<View style={{ flex: 1.7, flexDirection: 'row' }}>
 
 							<Text
 								style={[styles.chosenTextTitle, { flex: 3.5, right: '2.5%' }]}>
@@ -152,7 +156,7 @@ const Kvarovi = (props) => {
 								<Animated.View style={{ flex: 2, transform: [{ scale: fadeAnim }] }}>
 									<Text style={styles.chosenTextSubTitle}>
 										{data.find && data.find(element => element).streets.find(item => item.neighbourhood == chosen)
-											&& data.find(element => element).streets.find(item => item.neighbourhood == chosen).streetList.length ? 'Улице у којима се налазе радови:' :
+											&& data.find(element => element).streets.find(item => item.neighbourhood == chosen).streetList.length ? 'Улице под кваром у вашем        ' + '\n' + ' насељу.' :
 											'Тренутно нема радова у вашем' + '\n' + ' насељу.'}
 									</Text>
 									{data.map && data.map(item => {
@@ -187,7 +191,7 @@ const Kvarovi = (props) => {
 
 							{data.map && data.map(a => {
 								return (
-									<Animated.View style={{ opacity: fadeAnim,marginLeft:20 }}>
+									<Animated.View style={{ opacity: fadeAnim, marginLeft: 20 }}>
 										<LinearGradient
 											colors={['#3b506e', '#aaaaaa']}
 											style={[styles.cardHolder]}
@@ -219,7 +223,6 @@ const Kvarovi = (props) => {
 												})}
 											</ScrollView>
 
-
 										</LinearGradient>
 									</Animated.View>
 								)
@@ -243,17 +246,17 @@ const Kvarovi = (props) => {
 						<Portal>
 							<Dialog visible={visible} onDismiss={(hideDialog)} dismissable={false}>
 								<Dialog.Content>
-									
-									<View style={{ height: 200 ,flexDirection:'column'}}>
-									<View style={{flex:1}}>
-										<Text style={{fontSize:30}}>Одаберите насеље у којем живите:</Text>
+
+									<View style={{ height: 200, flexDirection: 'column' }}>
+										<View style={{ flex: 1 }}>
+											<Text style={{ fontSize: 30 }}>Одаберите насеље у којем живите:</Text>
 										</View>
-										<View style={{flex:1}}>
-										<AreaPicker />
+										<View style={{ flex: 1 }}>
+											<AreaPicker />
 										</View>
 									</View>
 									<Dialog.Actions style={{ alignSelf: 'flex-end' }}>
-									
+
 										<Button onPress={hideDialog}>Потврди</Button>
 									</Dialog.Actions>
 								</Dialog.Content>
@@ -269,8 +272,8 @@ const Kvarovi = (props) => {
 
 function Main() {
 
-	
-	
+
+
 	const [selectedIndex, setIndex] = useState(0);
 	const [check, setCheck] = useState(false);
 	NavigationBar.setBackgroundColorAsync("#323b59");
@@ -282,14 +285,15 @@ function Main() {
 				friction: 17,
 				useNativeDriver: true
 			})}>
-
+			<StatusBar style="light" />
 			<TouchableOpacity
 				onPress={() => { setCheck(false) }}
 				activeOpacity={1}>
 				{{
 					0: <Kvarovi setDrawerCheck={setCheck} />,
 					1: <Radovi setDrawerCheck={setCheck} />,
-					2: <Struja setDrawerCheck={setCheck} />
+					2: <Struja setDrawerCheck={setCheck} />,
+					3: <Prijava setDrawerCheck={setCheck} />
 				}[selectedIndex]}
 			</TouchableOpacity>
 		</SideMenu>
@@ -363,7 +367,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#f0e9e9',
 		justifyContent: 'center',
 		height: 375,
-	
+
 		borderRadius: 20,
 		width: 320,
 		alignSelf: 'center',

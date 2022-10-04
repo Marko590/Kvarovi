@@ -1,23 +1,23 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 
 
 
 export default function TimeButton(props) {
 	const [check, setCheck] = useState(true);
-	const [myIndex, setMyIndex] = useState(0);
+	
 
 	return (
 		<>
 			{props.isAlone ?
-				<TouchableOpacity style={props.selectedIndex == props.index ? styles.timeButtonPressedAlone : styles.timeButtonAlone} 
-				onPress={() => { setCheck(prevCheck => !prevCheck); props.setIndex(props.index) }} >
+				<TouchableOpacity style={props.selectedIndex == props.index ? styles.timeButtonPressedAlone : styles.timeButtonAlone}
+					onPress={() => { setCheck(prevCheck => !prevCheck); props.setIndex(props.index) }} >
 					<Text style={props.selectedIndex == props.index ? styles.timeButtonTextPressedAlone : styles.timeButtonTextAlone}>{props.time.trim()}</Text>
 				</TouchableOpacity> :
 
 				<TouchableOpacity style={props.selectedIndex == props.index ? styles.timeButtonPressed : styles.timeButton}
-				 onPress={() => { setCheck(prevCheck => !prevCheck); props.setIndex(props.index) }} >
+					onPress={() => { setCheck(prevCheck => !prevCheck); props.setIndex(props.index) }} >
 					<Text style={props.selectedIndex == props.index ? styles.timeButtonTextPressed : styles.timeButtonText}>
 						{props.time.trim()}
 					</Text>
